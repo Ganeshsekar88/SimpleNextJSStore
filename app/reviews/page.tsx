@@ -2,7 +2,16 @@ import { deleteReviewAction, fetchProductReviewsByUser } from '@/utils/actions';
 import ReviewCard from '@/components/reviews/ReviewCard';
 import SectionTitle from '@/components/global/SectionTitle';
 import FormContainer from '@/components/form/FormContainer';
-import { IconButton } from '@/components/form/Buttons';
+import { IconButton } from '@/components/form/IconButton';
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      [elementName: string]: any;
+    }
+  }
+}
+
 async function ReviewsPage() {
   const reviews = await fetchProductReviewsByUser();
   if (reviews.length === 0)
@@ -11,7 +20,7 @@ async function ReviewsPage() {
   return (
     <>
       <SectionTitle text='Your Reviews' />
-      <section className='grid md:grid-cols-2 gap-8 mt-4 '>
+      <section className='grid md:grid-cols-2 gap-8 mt-4'>
         {reviews.map((review) => {
           const { comment, rating } = review;
           const { name, image } = review.product;
