@@ -5,7 +5,7 @@ import db from '@/utils/db';
 
 export const POST = async (req: NextRequest) => {
   const requestHeaders = new Headers(req.headers);
-  console.log('request headers of payemnt post request initiatd from checkout page', requestHeaders);
+  // console.log('request headers of payemnt post request initiatd from checkout page', requestHeaders);
   const origin = requestHeaders.get('origin');
     // console.log('origin of payemnt post request initiated from checkout page', origin);
 
@@ -29,8 +29,8 @@ export const POST = async (req: NextRequest) => {
     },
   });
 
-  console.log('order to be processed from the payment router    ', order);
-  console.log('cart to be processed from the payment router', cart);
+  // console.log('order to be processed from the payment router    ', order);
+  // console.log('cart to be processed from the payment router', cart);
   if (!order || !cart) {
     return Response.json(null, {
       status: 404,
@@ -59,12 +59,12 @@ export const POST = async (req: NextRequest) => {
       return_url: `${origin}/api/confirm?session_id={CHECKOUT_SESSION_ID}`, 
     });
 
-    console.log("=========================================================================");
-    console.log('stripe checkout session returned as output:',session);
+    // console.log("=========================================================================");
+    // console.log('stripe checkout session returned as output:',session);
     
-    console.log("=========================================================================");
+    // console.log("=========================================================================");
 
-    console.log('stripe checkout session returned client secret:',session,  session.client_secret);
+    // console.log('stripe checkout session returned client secret:',session,  session.client_secret);
 
     return Response.json({ clientSecret: session.client_secret });
   } catch (error) {

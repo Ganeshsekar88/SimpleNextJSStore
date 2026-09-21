@@ -162,7 +162,7 @@ export const fetchAdminProducts = async () => {
 import { revalidatePath } from 'next/cache';
 
 export const deleteProductAction = async (prevState: { productId: string }) => {
-  console.log('deleteProductAction called with prevState:', prevState);
+  // console.log('deleteProductAction called with prevState:', prevState);
   const { productId } = prevState;
   await getAdminUser();
 

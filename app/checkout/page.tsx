@@ -24,7 +24,7 @@ export default function CheckoutPage() {
       orderId: orderId,
       cartId: cartId,
     });
-    console.log('stripe checkout initiation response', response.data);
+    // console.log('stripe checkout initiation response', response.data);
     return response.data.clientSecret;
   }, []);
 

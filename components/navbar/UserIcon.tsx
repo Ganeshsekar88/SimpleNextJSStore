@@ -3,7 +3,7 @@ import { currentUser } from '@clerk/nextjs/server';
 import Image from 'next/image';
 async function UserIcon() {
   const user = await currentUser();
-  console.log('user', user);
+  // console.log('user', user);
   const profileImage = user?.imageUrl;
   if (profileImage)
     return (
