@@ -30,5 +30,3 @@ export const IconButton = ({ actionType }: { actionType: actionType }) => {
     </Button>
   );
 };
-
-export default IconButton;

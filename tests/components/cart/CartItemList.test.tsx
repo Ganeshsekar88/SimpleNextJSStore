@@ -4,24 +4,24 @@ import CartItemsList from '@/components/cart/CartItemList';
 import type { CartItemWithProduct } from '@/utils/types';
 
 jest.mock('@/utils/actions', () => ({
-  removeCartItemAction: jest.fn(),
-  updateCartItemAction: jest.fn(),
+    removeCartItemAction: jest.fn(),
+    updateCartItemAction: jest.fn(),
 }));
 
 jest.mock('@/components/cart/ThirdColumn', () => ({
-  __esModule: true,
-  default: ({
-    quantity,
-    id,
-  }: {
-    quantity: number;
-    id: string;
-  }) => (
-    <div data-testid='third-column'>
-      <span>Quantity: {quantity}</span>
-      <span>Cart Item ID: {id}</span>
-    </div>
-  ),
+    __esModule: true,
+    default: ({
+        quantity,
+        id,
+    }: {
+        quantity: number;
+        id: string;
+    }) => (
+        <div data-testid='third-column'>
+            <span>Quantity: {quantity}</span>
+            <span>Cart Item ID: {id}</span>
+        </div>
+    ),
 }));
 
 const mockCartItem: CartItemWithProduct = {
@@ -45,6 +45,18 @@ const mockCartItem: CartItemWithProduct = {
         clerkId: 'clerk-product-123',
     },
 };
+
+jest.mock('next/image', () => ({
+    __esModule: true,
+    default: ({
+        fill: _fill,
+        priority: _priority,
+        ...props
+    }: React.ImgHTMLAttributes<HTMLImageElement> & {
+        fill?: boolean;
+        priority?: boolean;
+    }) => <img {...props} />,
+}));
 
 describe('CartItemsList', () => {
     it('renders the cart item product information', () => {
