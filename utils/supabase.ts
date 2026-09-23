@@ -1,6 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
-const bucket = 'my-bucket';
+// Production bucket
+
+// const bucket = 'my-bucket';
+
+// Test bucket
+
+const bucket = 'second-bucket';
 
 // Create a single supabase client for interacting with your database
 export const supabase = createClient(
