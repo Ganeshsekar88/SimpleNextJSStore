@@ -1,3 +1,4 @@
+
 import { render, screen } from '@testing-library/react';
 import { useFormStatus } from 'react-dom';
 import { IconButton } from '@/components/form/IconButton';
@@ -8,12 +9,12 @@ jest.mock('react-dom', () => ({
 }));
 
 jest.mock('react-icons/lu', () => ({
-    LuPen: () => <span data-testid="edit-icon" />,
-    LuTrash2: () => <span data-testid="delete-icon" />,
+    LuPen: () => <span data-testid='edit-icon' />,
+    LuTrash2: () => <span data-testid='delete-icon' />,
 }));
 
 jest.mock('@radix-ui/react-icons', () => ({
-    ReloadIcon: () => <span data-testid="reload-icon" />,
+    ReloadIcon: () => <span data-testid='reload-icon' />,
 }));
 
 const mockedUseFormStatus = useFormStatus as jest.Mock;
@@ -30,7 +31,7 @@ describe('IconButton', () => {
     });
 
     it('renders the edit icon when actionType is edit', () => {
-        render(<IconButton actionType="edit" />);
+        render(<IconButton actionType='edit' />);
 
         expect(screen.getByTestId('edit-icon')).toBeInTheDocument();
         expect(screen.queryByTestId('delete-icon')).not.toBeInTheDocument();
@@ -38,7 +39,7 @@ describe('IconButton', () => {
     });
 
     it('renders the delete icon when actionType is delete', () => {
-        render(<IconButton actionType="delete" />);
+        render(<IconButton actionType='delete' />);
 
         expect(screen.getByTestId('delete-icon')).toBeInTheDocument();
         expect(screen.queryByTestId('edit-icon')).not.toBeInTheDocument();
@@ -50,7 +51,7 @@ describe('IconButton', () => {
             pending: true,
         });
 
-        render(<IconButton actionType="edit" />);
+        render(<IconButton actionType='edit' />);
 
         expect(screen.getByTestId('reload-icon')).toBeInTheDocument();
         expect(screen.queryByTestId('edit-icon')).not.toBeInTheDocument();
@@ -62,21 +63,29 @@ describe('IconButton', () => {
             pending: true,
         });
 
-        render(<IconButton actionType="delete" />);
+        render(<IconButton actionType='delete' />);
 
         expect(screen.getByTestId('reload-icon')).toBeInTheDocument();
         expect(screen.queryByTestId('delete-icon')).not.toBeInTheDocument();
     });
 
     it('renders a submit button', () => {
-        render(<IconButton actionType="edit" />);
+        render(<IconButton actionType='edit' />);
 
         expect(screen.getByRole('button')).toHaveAttribute('type', 'submit');
     });
 
     it('throws an error for an invalid action type', () => {
-        expect(() => {
-            render(<IconButton actionType={'invalid' as never} />);
-        }).toThrow('Invalid action type: invalid');
+        const consoleErrorSpy = jest
+            .spyOn(console, 'error')
+            .mockImplementation(() => { });
+
+        try {
+            expect(() => {
+                render(<IconButton actionType={'invalid' as never} />);
+            }).toThrow('Invalid action type: invalid');
+        } finally {
+            consoleErrorSpy.mockRestore();
+        }
     });
 });
