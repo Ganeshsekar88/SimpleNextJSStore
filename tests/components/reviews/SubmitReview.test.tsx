@@ -30,13 +30,10 @@ import userEvent from '@testing-library/user-event';
 import { render, screen } from '@testing-library/react';
 import SubmitReview from '@/components/reviews/SubmitReview';
 
+const mockUseUser = jest.fn();
+
 jest.mock('@clerk/nextjs', () => ({
-  useUser: () => ({
-    user: {
-      firstName: 'Ava',
-      imageUrl: 'https://example.com/ava.png',
-    },
-  }),
+  useUser: () => mockUseUser(),
 }));
 
 jest.mock('@/utils/actions', () => ({
@@ -49,12 +46,27 @@ jest.mock('@/components/form/Buttons', () => ({
 
 jest.mock('@/components/form/FormContainer', () => ({
   __esModule: true,
-  default: ({ children }: { children: React.ReactNode }) => (
-    <form>{children}</form>
-  ),
+  default: ({
+    children,
+  }: {
+    children: React.ReactNode;
+  }) => <form>{children}</form>,
 }));
 
 describe('SubmitReview', () => {
+  beforeEach(() => {
+    mockUseUser.mockReturnValue({
+      user: {
+        firstName: 'Ava',
+        imageUrl: 'https://example.com/ava.png',
+      },
+    });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('does not show the review form initially', () => {
     render(<SubmitReview productId="product-1" />);
 
@@ -127,7 +139,9 @@ describe('SubmitReview', () => {
 
     await user.click(rating);
 
-    const option = await screen.findByRole('option', { name: '3' });
+    const option = await screen.findByRole('option', {
+      name: '3',
+    });
 
     await user.click(option);
 
@@ -173,5 +187,50 @@ describe('SubmitReview', () => {
     expect(
       screen.queryByLabelText(/feedback/i)
     ).not.toBeInTheDocument();
+  });
+
+  it('uses "user" when the authenticated user has no first name', async () => {
+    const user = userEvent.setup();
+
+    mockUseUser.mockReturnValue({
+      user: {
+        firstName: undefined,
+        imageUrl: 'https://example.com/ava.png',
+      },
+    });
+
+    render(<SubmitReview productId="product-1" />);
+
+    await user.click(
+      screen.getByRole('button', { name: /leave review/i })
+    );
+
+    expect(
+      screen.getByDisplayValue('user')
+    ).toHaveAttribute('name', 'authorName');
+  });
+
+  it('uses an empty string when the authenticated user has no image', async () => {
+    const user = userEvent.setup();
+
+    mockUseUser.mockReturnValue({
+      user: {
+        firstName: 'Ava',
+        imageUrl: undefined,
+      },
+    });
+
+    render(<SubmitReview productId="product-1" />);
+
+    await user.click(
+      screen.getByRole('button', { name: /leave review/i })
+    );
+
+    const imageInput = document.querySelector(
+      'input[name="authorImageUrl"]'
+    );
+
+    expect(imageInput).toBeInTheDocument();
+    expect(imageInput).toHaveValue('');
   });
 });

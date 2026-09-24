@@ -15,7 +15,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import IconButton from '@/components/form/IconButton';
+import { IconButton } from '@/components/form/IconButton';
 
 async function ItemsPage() {
   const items = await fetchAdminProducts();
