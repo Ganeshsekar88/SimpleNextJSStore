@@ -19,7 +19,7 @@ export const productSchema = z.object({
     }),
   company: z.string(),
   featured: z.coerce.boolean(),
-  price: z.coerce.number().int().min(0, {
+  price: z.coerce.number().int().min(0.1, {
     message: 'price must be a positive number.',
   }),
   description: z.string().refine(
