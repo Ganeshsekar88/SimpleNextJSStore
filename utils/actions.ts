@@ -1,7 +1,6 @@
 'use server';
 
 import db from '@/utils/db';
-// import { auth, currentUser } from '@clerk/nextjs/server';
 
 import { auth, currentUser } from '@clerk/nextjs/server';
 
@@ -682,7 +681,3 @@ export const fetchAdminOrders = async () => {
   });
   return orders;
 };
-
-
-
-
