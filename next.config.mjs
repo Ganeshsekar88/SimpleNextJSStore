@@ -11,12 +11,6 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'ujbfzhyzbzatualsvbvz.supabase.co',
       },
-
-      //test supabase bucket
-      //  {
-      //   protocol: 'https',
-      //   hostname: 'gocpdhqmqqlhluoacikb.supabase.co',
-      // },
       {
         protocol: 'https',
         hostname: 'img.clerk.com',
