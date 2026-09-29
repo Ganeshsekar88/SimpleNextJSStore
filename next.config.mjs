@@ -7,16 +7,16 @@ const nextConfig = {
         hostname: 'images.pexels.com',
       },
       //production supabase bucket
-      // {
-      //   protocol: 'https',
-      //   hostname: 'ujbfzhyzbzatualsvbvz.supabase.co',
-      // },
+      {
+        protocol: 'https',
+        hostname: 'ujbfzhyzbzatualsvbvz.supabase.co',
+      },
 
       //test supabase bucket
-       {
-        protocol: 'https',
-        hostname: 'gocpdhqmqqlhluoacikb.supabase.co',
-      },
+      //  {
+      //   protocol: 'https',
+      //   hostname: 'gocpdhqmqqlhluoacikb.supabase.co',
+      // },
       {
         protocol: 'https',
         hostname: 'img.clerk.com',
