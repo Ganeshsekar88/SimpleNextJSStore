@@ -95,7 +95,7 @@ describe('Supabase utilities', () => {
 
       const result = await uploadImage(image);
 
-      expect(mockFrom).toHaveBeenCalledWith('second-bucket');
+      expect(mockFrom).toHaveBeenCalledWith('my-bucket');
 
       expect(mockUpload).toHaveBeenCalledWith(
         `${timestamp}-photo.jpg`,
@@ -181,7 +181,7 @@ describe('Supabase utilities', () => {
   describe('deleteImage', () => {
     it('extracts the filename from the URL and removes the image', async () => {
       const url =
-        'https://example.supabase.co/storage/v1/object/public/second-bucket/123456-photo.jpg';
+        'https://example.supabase.co/storage/v1/object/public/my-bucket/123456-photo.jpg';
 
       mockRemove.mockResolvedValue({
         data: ['123456-photo.jpg'],
@@ -190,7 +190,7 @@ describe('Supabase utilities', () => {
 
       const result = await deleteImage(url);
 
-      expect(mockFrom).toHaveBeenCalledWith('second-bucket');
+      expect(mockFrom).toHaveBeenCalledWith('my-bucket');
 
       expect(mockRemove).toHaveBeenCalledWith([
         '123456-photo.jpg',
