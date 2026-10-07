@@ -414,7 +414,7 @@ export const fetchProductRating = async (productId: string) => {
 };
 
 export const fetchCartItems = async () => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   const cart = await db.cart.findFirst({
     where: {
