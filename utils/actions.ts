@@ -21,17 +21,22 @@ const getAuthUser = async () => {
 };
 
 
-export const fetchFeaturedProducts = async () => {
-  // await new Promise((resolve) => setTimeout(resolve, 15000));
+import { unstable_cache } from 'next/cache';
 
-  const products = await db.product.findMany({
-    where: {
-      featured: true,
-    },
-  });
-  return products;
-};
-
+export const fetchFeaturedProducts = unstable_cache(
+  async () => {
+    return db.product.findMany({
+      where: {
+        featured: true,
+      },
+    });
+  },
+  ['featured-products'],
+  {
+    revalidate: 3600,
+    tags: ['featured-products'],
+  }
+);
 export const fetchAllProducts = ({ search = '' }: { search: string }) => {
   return db.product.findMany({
     where: {
