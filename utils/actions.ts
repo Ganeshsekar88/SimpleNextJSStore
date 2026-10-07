@@ -21,7 +21,8 @@ const getAuthUser = async () => {
 };
 
 
-import { unstable_cache } from 'next/cache';
+import { unstable_cache, revalidateTag } from 'next/cache';
+
 
 export const fetchFeaturedProducts = unstable_cache(
   async () => {
@@ -129,6 +130,8 @@ export const createProductAction = async (
         clerkId: user.id,
       },
     });
+
+    revalidateTag('featured-products');
     return { message: 'product created' };
 
 
@@ -215,6 +218,8 @@ export const updateProductAction = async (
         ...validatedFields,
       },
     });
+
+    revalidateTag('featured-products');
     revalidatePath(`/admin/products/${productId}/edit`);
     return { message: 'Product updated successfully' };
   } catch (error) {
