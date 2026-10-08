@@ -7,7 +7,7 @@ import FavoriteToggleButton from './FavoriteToggleButton';
 function ProductsList({ products }: { products: Product[] }) {
   return (
     <div className='mt-12 grid gap-y-8'>
-      {products.map((product) => {
+      {products.map((product, index) => {
         const { name, price, image, company } = product;
         const dollarsAmount = formatCurrency(price);
         const productId = product.id;
@@ -22,7 +22,7 @@ function ProductsList({ products }: { products: Product[] }) {
                       alt={name}
                       fill
                       sizes='(max-width:768px) 100vw,(max-width:1200px) 50vw,33vw'
-                      priority
+                      priority={index === 0}
                       className='w-full rounded-md object-cover'
                     />
                   </div>

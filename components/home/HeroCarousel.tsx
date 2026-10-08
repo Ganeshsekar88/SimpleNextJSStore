@@ -26,7 +26,9 @@ function HeroCarousel() {
                   <CardContent className='p-2'>
                     <Image
                       src={image}
-                      alt='hero'
+                      alt={`Store collection highlight ${index + 1}`}
+                      priority={index === 0}
+                      sizes='(max-width: 1023px) 100vw, (max-width: 1280px) 45vw, 576px'
                       className='w-full h-[24rem] rounded-md object-cover'
                     />
                   </CardContent>

@@ -25,6 +25,7 @@ export const IconButton = ({ actionType }: { actionType: actionType }) => {
       size='icon'
       variant='link'
       className='p-2 cursor-pointer'
+      aria-label={`${actionType} item`}
     >
       {pending ? <ReloadIcon className=' animate-spin' /> : renderIcon()}
     </Button>
