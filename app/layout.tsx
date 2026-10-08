@@ -20,12 +20,12 @@ export default function RootLayout({
   return (
     <html lang='en' suppressHydrationWarning>
       <body className={inter.className}>
-        <Providers>
-          <Navbar />
+        {/* <Providers>
+          <Navbar /> */}
           <main>
             <Container className='py-20'>{children}</Container>
           </main>
-        </Providers>
+        {/* </Providers> */}
       </body>
     </html>
   );
