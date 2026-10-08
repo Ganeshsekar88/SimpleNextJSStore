@@ -8,7 +8,9 @@ async function FeaturedProducts() {
     return (
       <section className='pt-24'>
         <SectionTitle text='featured products' />
-        <EmptyList />
+        <div className='pt-12' >
+          <EmptyList />
+        </div>
       </section>
     );
   }
