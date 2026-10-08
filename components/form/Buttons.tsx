@@ -44,12 +44,15 @@ export function SubmitButton({
 
 export const CardSubmitButton = ({ isFavorite }: { isFavorite: boolean }) => {
   const { pending } = useFormStatus();
+  const label = isFavorite ? 'Remove from favorites' : 'Add to favorites';
+
   return (
     <Button
       type='submit'
       size='icon'
       variant='outline'
       className=' p-2 cursor-pointer'
+      aria-label={label}
     >
       {pending ? (
         <ReloadIcon className=' animate-spin' />
@@ -70,7 +73,7 @@ export const CardSignInButton = () => {
         size='icon'
         variant='outline'
         className='p-2 cursor-pointer'
-        asChild
+        aria-label='Sign in to add to favorites'
       >
         <FaRegHeart />
       </Button>
@@ -87,4 +90,3 @@ export const ProductSignInButton = () => {
     </SignInButton>
   );
 };
-

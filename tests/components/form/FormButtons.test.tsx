@@ -93,6 +93,9 @@ describe('CardSubmitButton', () => {
 
         expect(screen.getByTestId('favorite-icon')).toBeInTheDocument();
         expect(
+            screen.getByRole('button', { name: 'Remove from favorites' })
+        ).toBeInTheDocument();
+        expect(
             screen.queryByTestId('not-favorite-icon')
         ).not.toBeInTheDocument();
     });
@@ -104,6 +107,9 @@ describe('CardSubmitButton', () => {
 
         expect(
             screen.getByTestId('not-favorite-icon')
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: 'Add to favorites' })
         ).toBeInTheDocument();
     });
 
@@ -146,6 +152,10 @@ describe('CardSignInButton', () => {
 
         expect(
             screen.getByTestId('not-favorite-icon')
+        ).toBeInTheDocument();
+
+        expect(
+            screen.getByRole('button', { name: 'Sign in to add to favorites' })
         ).toBeInTheDocument();
     });
 });
