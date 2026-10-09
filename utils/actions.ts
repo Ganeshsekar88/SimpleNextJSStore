@@ -421,16 +421,104 @@ export const fetchProductRating = async (productId: string) => {
 export const fetchCartItems = async () => {
   const { userId } = await auth();
 
+  if (!userId) {
+    return 0;
+  }
+
+  const start = performance.now();
+
   const cart = await db.cart.findFirst({
-    where: {
-      clerkId: userId ?? '',
-    },
-    select: {
-      numItemsInCart: true,
-    },
+    where: { clerkId: userId },
+    select: { numItemsInCart: true },
   });
-  return cart?.numItemsInCart || 0;
+
+  console.log('[fetchCartItems]', {
+    durationMs: performance.now() - start,
+  });
+
+  return cart?.numItemsInCart ?? 0;
 };
+
+
+// export const fetchCartItems = async () => {
+//   const { userId } = await auth();
+
+//   if (!userId) {
+//     return 0;
+//   }
+
+//   const durations: number[] = [];
+
+//   for (let i = 0; i < 5; i++) {
+//     const start = performance.now();
+
+//     await db.cart.findFirst({
+//       where: {
+//         clerkId: userId,
+//       },
+//       select: {
+//         numItemsInCart: true,
+//       },
+//     });
+
+//     durations.push(performance.now() - start);
+//   }
+
+//   console.log(
+//     '[fetchCartItems] Five-query timings:',
+//     durations.map((duration) => Number(duration.toFixed(2)))
+//   );
+
+//   const cart = await db.cart.findFirst({
+//     where: {
+//       clerkId: userId,
+//     },
+//     select: {
+//       numItemsInCart: true,
+//     },
+//   });
+
+//   return cart?.numItemsInCart ?? 0;
+// };
+// export const fetchCartItems = async () => {
+//   const totalStart = performance.now();
+
+//   try {
+//     // Measure authentication
+//     const authStart = performance.now();
+
+//     const { userId } = await auth();
+
+//     const authDuration = performance.now() - authStart;
+
+//     // Measure database query
+//     const dbStart = performance.now();
+
+//     const cart = await db.cart.findFirst({
+//       where: {
+//         clerkId: userId ?? '',
+//       },
+//       select: {
+//         numItemsInCart: true,
+//       },
+//     });
+
+//     const dbDuration = performance.now() - dbStart;
+
+//     console.log('[fetchCartItems] Performance:', {
+//       authDurationMs: Number(authDuration.toFixed(2)),
+//       dbDurationMs: Number(dbDuration.toFixed(2)),
+//       totalDurationMs: Number(
+//         (performance.now() - totalStart).toFixed(2)
+//       ),
+//     });
+
+//     return cart?.numItemsInCart || 0;
+//   } catch (error) {
+//     console.error('[fetchCartItems] Failed:', error);
+//     throw error;
+//   }
+// };
 
 import { Cart } from '@prisma/client';
 

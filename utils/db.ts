@@ -1,7 +1,14 @@
 import { PrismaClient } from '@prisma/client';
 
 const prismaClientSingleton = () => {
-  return new PrismaClient();
+  return new PrismaClient({
+    log: [
+      {
+        emit: 'event',
+        level: 'query',
+      },
+    ],
+  });
 };
 
 type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>;
@@ -12,6 +19,18 @@ const globalForPrisma = globalThis as unknown as {
 
 const prisma = globalForPrisma.prisma ?? prismaClientSingleton();
 
-export default prisma;
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma;
+}
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+// Log query duration during local development only.
+if (process.env.NODE_ENV !== 'production') {
+  prisma.$on('query', (event) => {
+    console.log('[Prisma Query]', {
+      durationMs: event.duration,
+      query: event.query,
+    });
+  });
+}
+
+export default prisma;
