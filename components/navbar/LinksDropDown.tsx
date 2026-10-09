@@ -11,15 +11,12 @@ import { Button } from '../ui/button';
 import { links } from '@/utils/link';
 import UserIcon from './UserIcon';
 import SignOutLink from './SignOutLink';
-import { SignInButton, SignUpButton, SignedIn, SignedOut } from '@clerk/nextjs';
+import { SignInButton, SignUpButton, Show } from '@clerk/nextjs';
 import { auth } from '@clerk/nextjs/server';
 
-
 async function LinksDropdown() {
-
   const { userId } = await auth();
   const isAdmin = userId === process.env.ADMIN_USER_ID;
-
 
   return (
     <DropdownMenu>
@@ -33,8 +30,9 @@ async function LinksDropdown() {
           <UserIcon />
         </Button>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent className='w-48' align='start' sideOffset={10}>
-        <SignedOut>
+        <Show when='signed-out'>
           <DropdownMenuItem>
             <SignInButton>
               <Link className='w-full text-left' href='/login'>
@@ -42,16 +40,19 @@ async function LinksDropdown() {
               </Link>
             </SignInButton>
           </DropdownMenuItem>
+
           <DropdownMenuSeparator />
+
           <DropdownMenuItem>
             <SignUpButton>
               <Link className='w-full text-left' href='/register'>
                 Register
-              </Link  >
+              </Link>
             </SignUpButton>
           </DropdownMenuItem>
-        </SignedOut>
-        <SignedIn>
+        </Show>
+
+        <Show when='signed-in'>
           {links.map((link) => {
             if (link.label === 'dashboard' && !isAdmin) return null;
 
@@ -63,13 +64,16 @@ async function LinksDropdown() {
               </DropdownMenuItem>
             );
           })}
+
           <DropdownMenuSeparator />
+
           <DropdownMenuItem>
             <SignOutLink />
           </DropdownMenuItem>
-        </SignedIn>
+        </Show>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 }
+
 export default LinksDropdown;

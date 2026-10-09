@@ -16,7 +16,7 @@ function ClerkThemeProvider({
   return (
     <ClerkProvider
       appearance={{
-        baseTheme: resolvedTheme === 'dark' ? dark : undefined,
+        theme: resolvedTheme === 'dark' ? dark : undefined,
       }}
     >
       {children}
