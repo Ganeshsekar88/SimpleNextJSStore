@@ -23,14 +23,15 @@ if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma;
 }
 
-// Log query duration during local development only.
-// if (process.env.NODE_ENV !== 'production') {
-  prisma.$on('query', (event) => {
-    console.log('[Prisma Query]', {
-      durationMs: event.duration,
-      query: event.query,
-    });
+console.log('[Prisma Diagnostic] Client module initialized', {
+  environment: process.env.NODE_ENV,
+});
+
+prisma.$on('query', (event) => {
+  console.log('[Prisma Diagnostic] Query event received', {
+    durationMs: event.duration,
+    query: event.query,
   });
-// }
+});
 
 export default prisma;
