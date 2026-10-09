@@ -5,11 +5,11 @@ import { Suspense } from 'react';
 function HomPage() {
   return (
     <>
-      {/* <Hero />
+      <Hero />
       <Suspense fallback={<LoadingContainer />}>
         <FeaturedProducts />
-      </Suspense> */}
-      <h2>Home</h2>
+      </Suspense>
+      {/* <h2>Home</h2> */}
     </>
   );
 }
