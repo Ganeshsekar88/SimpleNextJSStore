@@ -24,13 +24,13 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // Log query duration during local development only.
-if (process.env.NODE_ENV !== 'production') {
+// if (process.env.NODE_ENV !== 'production') {
   prisma.$on('query', (event) => {
     console.log('[Prisma Query]', {
       durationMs: event.duration,
       query: event.query,
     });
   });
-}
+// }
 
 export default prisma;
