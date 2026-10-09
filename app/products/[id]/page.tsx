@@ -11,10 +11,10 @@ import ProductReviews from '@/components/reviews/ProductReview';
 import { findExistingReview } from '@/utils/actions';
 import { auth } from '@clerk/nextjs/server';
 
-async function SingleProductPage({ params }: { params: { id: string } }) {
+async function SingleProductPage({ params }: { params: Promise<{ id: string }> }) {
 
   const { userId } = await auth();
-  const product = await fetchSingleProduct(params.id);
+  const product = await fetchSingleProduct((await params).id);
 
   const reviewDoesNotExist =
     userId && !(await findExistingReview(userId, product.id));
@@ -42,21 +42,21 @@ async function SingleProductPage({ params }: { params: { id: string } }) {
         <div>
           <div className='flex gap-x-8 items-center'>
             <h1 className='capitalize text-3xl font-bold'>{name}</h1>
-            <FavoriteToggleButton productId={params.id} />
-            <ShareButton productId={params.id} name={name} />
+            <FavoriteToggleButton productId={(await params).id} />
+            <ShareButton productId={(await params).id} name={name} />
           </div>
-          <ProductRating productId={params.id} />
+          <ProductRating productId={(await params).id} />
           <h4 className='text-xl mt-2'>{company}</h4>
           <p className='mt-3 text-md bg-muted inline-block p-2 rounded-md'>
             {dollarsAmount}
           </p>
           <p className='mt-6 leading-8 text-muted-foreground'>{description}</p>
-          <AddToCart productId={params.id} />
+          <AddToCart productId={(await params).id} />
         </div>
       </div>
       <>
-        <ProductReviews productId={params.id} />
-        {reviewDoesNotExist && <SubmitReview productId={params.id} />}
+        <ProductReviews productId={(await params).id} />
+        {reviewDoesNotExist && <SubmitReview productId={(await params).id} />}
       </>
     </section>
   );
