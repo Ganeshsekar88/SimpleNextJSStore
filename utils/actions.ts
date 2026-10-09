@@ -131,7 +131,7 @@ export const createProductAction = async (
       },
     });
 
-    revalidateTag('featured-products');
+    revalidateTag('featured-products','max');
     return { message: 'product created' };
 
 
@@ -219,7 +219,7 @@ export const updateProductAction = async (
       },
     });
 
-    revalidateTag('featured-products');
+    revalidateTag('featured-products', 'max');
     revalidatePath(`/admin/products/${productId}/edit`);
     return { message: 'Product updated successfully' };
   } catch (error) {
