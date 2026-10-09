@@ -5,8 +5,8 @@ import { fetchCartItems } from '@/utils/actions';
 async function CartButton() {
   // temp
 
-  // const numItemsInCart = await fetchCartItems();
-  const numItemsInCart = 3;
+  const numItemsInCart = await fetchCartItems();
+  // const numItemsInCart = 3;
   return (
     <Button
       asChild
