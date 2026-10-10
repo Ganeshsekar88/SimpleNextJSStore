@@ -1,4 +1,4 @@
-import  Container  from "@/components/global/Container";
+import Container from "@/components/global/Container";
 import Logo from "./Logo";
 import NavSearch from "./NavSearch";
 import CartButton from "./CartButton";
@@ -11,12 +11,16 @@ const Navbar = () => {
     <Container className='flex flex-col sm:flex-row sm:justify-between sm:items-center flex-wrap py-8 gap-4'>
       <Logo></Logo>
       <Suspense>
-        <NavSearch/>
+        <NavSearch />
       </Suspense>
       <div className='flex gap-4 items-center'>
-        <CartButton/>
-        <DarkMode/>
-        <LinksDropDown/>
+        <Suspense>
+          <CartButton />
+        </Suspense>
+        <DarkMode />
+        <suspense>
+          <LinksDropDown />
+        </suspense>
       </div>
     </Container>
   </nav>;
