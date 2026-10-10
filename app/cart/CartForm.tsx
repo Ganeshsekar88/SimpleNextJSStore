@@ -9,15 +9,16 @@ import { redirect } from 'next/navigation';
 async function CartPage() {
   const { userId } = await auth();
   if (!userId) redirect('/');
-  const numItemsInCart = await fetchCartItems();
-  if (numItemsInCart === 0) {
-    return <SectionTitle text='Empty cart' />;
-  }
+  // const numItemsInCart = await fetchCartItems();
+  // if (numItemsInCart === 0) {
+  //   return <SectionTitle text='Empty cart' />;
+  // }
 
   const previousCart = await fetchOrCreateCart({ userId });
   const { cartItems, currentCart } = await updateCart(previousCart);
-
-
+    if (cartItems.length === 0) {
+    return <SectionTitle text='Empty cart' />;
+  }
   return (
     <>
       <SectionTitle text='Shopping Cart' />
