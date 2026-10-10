@@ -7,8 +7,8 @@ import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 
 async function CartPage() {
-  // const { userId } = await auth();
-  // if (!userId) redirect('/');
+  const { userId } = await auth();
+  if (!userId) redirect('/');
   const numItemsInCart = await fetchCartItems();
   if (numItemsInCart === 0) {
     return <SectionTitle text='Empty cart' />;
