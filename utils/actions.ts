@@ -653,6 +653,7 @@ export const addToCartAction = async (prevState: any, formData: FormData) => {
     const cart = await fetchOrCreateCart({ userId: user.id });
     await updateOrCreateCartItem({ productId, cartId: cart.id, amount });
     await updateCart(cart);
+    revalidatePath('/products/[productId]');
   } catch (error) {
     return renderError(error);
   }
