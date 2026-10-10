@@ -1,16 +1,11 @@
+import { Suspense } from 'react';
+import RegisterForm from './RegisterForm';
+import LoadingContainer from '@/components/global/LoadingContainer';
 
-import { SignUp } from '@clerk/nextjs';
-
-const RegisterPage = () => {
+export default function RegisterPage() {
   return (
-    <div className='flex flex-col items-center justify-center py-2'>
-
-
-      <SignUp
-      //  path="/register" routing="path" signInUrl="/login" 
-      />
-    </div>
+      <Suspense fallback={<LoadingContainer />}>
+      <RegisterForm />
+    </Suspense>
   );
-};
-
-export default RegisterPage;
+}
