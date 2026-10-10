@@ -151,7 +151,7 @@ export const createProductAction = async (
 
 const getAdminUser = async () => {
   const user = await getAuthUser();
-  if (user.id !== process.env.ADMIN_USER_ID) redirect('/');
+  if (user.id !== process.env.ADMIN1_USER_ID && user.id !== process.env.ADMIN2_USER_ID) redirect('/');
   return user;
 };
 // refactor createProductAction
