@@ -21,9 +21,11 @@ export default clerkMiddleware(async (auth, req) => {
   const authStart = performance.now();
   const { userId } = await auth();
 
+  console.log(userId);
+
   const authDuration = performance.now() - authStart;
 
-  const isAdminUser = userId === process.env.ADMIN_USER_ID;
+  const isAdminUser = userId === process.env.ADMIN1_USER_ID || userId === process.env.ADMIN2_USER_ID;
 
   if (isAdminRoute(req) && !isAdminUser) {
     console.log({
