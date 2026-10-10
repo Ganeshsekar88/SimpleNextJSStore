@@ -1,5 +1,7 @@
 import { Separator } from '@/components/ui/separator';
 import Sidebar from './Sidebar';
+import LoadingContainer from '@/components/global/LoadingContainer';
+import { Suspense } from 'react';
 
 function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -8,7 +10,9 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
       <Separator className='mt-2' />
       <section className='grid lg:grid-cols-12 gap-12 mt-12'>
         <div className='lg:col-span-2'>
-          <Sidebar />
+          <Suspense fallback={<LoadingContainer />}>
+            <Sidebar />
+          </Suspense>
         </div>
         <div className='lg:col-span-10 px-4'>{children}</div>
       </section>
