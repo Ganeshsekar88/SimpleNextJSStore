@@ -5,21 +5,20 @@ import CartButton from "./CartButton";
 import DarkMode from "./DarkMode";
 import LinksDropDown from "./LinksDropDown";
 import { Suspense } from 'react';
-import LoadingContainer from '@/components/global/LoadingContainer';
 
 const Navbar = () => {
   return <nav className='border-b'>
     <Container className='flex flex-col sm:flex-row sm:justify-between sm:items-center flex-wrap py-8 gap-4'>
       <Logo></Logo>
-      <Suspense fallback={<LoadingContainer />}>
+      <Suspense fallback={<p>Loading...</p>}>
         <NavSearch />
       </Suspense>
       <div className='flex gap-4 items-center'>
-        <Suspense>
+        <Suspense fallback={<p>Loading...</p>}>
           <CartButton />
         </Suspense>
         <DarkMode />
-        <Suspense fallback={<LoadingContainer />}>
+        <Suspense fallback={<p>Loading...</p>}>
           <LinksDropDown />
         </Suspense>
       </div>

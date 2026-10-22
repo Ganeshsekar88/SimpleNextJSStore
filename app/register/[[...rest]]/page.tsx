@@ -1,10 +1,9 @@
 import { Suspense } from 'react';
 import RegisterForm from './RegisterForm';
-import LoadingContainer from '@/components/global/LoadingContainer';
 
 export default function RegisterPage() {
   return (
-      <Suspense fallback={<LoadingContainer />}>
+      <Suspense fallback={<p>Loading...</p>}>
       <RegisterForm />
     </Suspense>
   );

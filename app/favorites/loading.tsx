@@ -1,8 +1,7 @@
 'use client';
 
-import LoadingContainer from '@/components/global/LoadingContainer';
 
 function loading() {
-  return <LoadingContainer />;
+  return <p>Loading...</p>;
 }
 export default loading;
