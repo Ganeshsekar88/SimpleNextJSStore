@@ -3,7 +3,7 @@ import { CardSignInButton } from '../form/Buttons';
 import { fetchFavoriteId } from '@/utils/actions';
 import FavoriteToggleForm from './FavoriteToggleForm';
 async function FavoriteToggleButton({ productId }: { productId: string }) {
-  const { userId } = await auth();
+  const { userId } = await auth.protect();
   if (!userId) return <CardSignInButton />;
   const favoriteId = await fetchFavoriteId({ productId });
 

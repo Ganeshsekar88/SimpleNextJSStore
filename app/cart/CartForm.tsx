@@ -7,7 +7,7 @@ import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 
 async function CartPage() {
-  const { userId } = await auth();
+  const { userId } = await auth.protect();
   if (!userId) redirect('/');
   // const numItemsInCart = await fetchCartItems();
   // if (numItemsInCart === 0) {
