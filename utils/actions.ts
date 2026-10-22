@@ -3,6 +3,7 @@
 import db from '@/utils/db';
 
 import { auth, currentUser } from '@clerk/nextjs/server';
+import { connection } from 'next/server';
 
 
 const renderError = (error: unknown): { message: string } => {
@@ -419,6 +420,7 @@ export const fetchProductRating = async (productId: string) => {
 };
 
 export const fetchCartItems = async () => {
+  await connection();
   const { userId } = await auth();
 
   if (!userId) {

@@ -2,6 +2,7 @@
 const nextConfig = {
 
   cacheComponents: true,
+  partialPrefetching: true,
   
   images: {
     // Serve smaller modern image formats when the browser supports them.
