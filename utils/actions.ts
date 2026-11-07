@@ -522,7 +522,7 @@ export const fetchCartItems = async () => {
 //   }
 // };
 
-import { Cart } from '@prisma/client';
+import type { Cart } from '@/generated/prisma/client';
 
 const fetchProduct = async (productId: string) => {
   const product = await db.product.findUnique({

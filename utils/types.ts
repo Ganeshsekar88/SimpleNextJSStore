@@ -21,7 +21,7 @@ export type CartState = {
   orderTotal: number;
 };
 
-import { Prisma } from '@prisma/client';
+import type { Prisma } from '@/generated/prisma/client';
 
 export type CartItemWithProduct = Prisma.CartItemGetPayload<{
   include: { product: true };
