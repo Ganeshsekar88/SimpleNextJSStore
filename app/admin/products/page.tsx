@@ -1,10 +1,7 @@
-
-import EmptyList from '@/components/global/EmptyList';
-import { fetchAdminProducts } from '@/utils/actions';
-import Link from 'next/link';
-import { deleteProductAction } from '@/utils/actions';
+import { IconButton } from '@/components/form/IconButton';
 import FormContainer from '@/components/form/FormContainer';
-import { formatCurrency } from '@/utils/format';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import {
   Table,
   TableBody,
@@ -14,53 +11,122 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-
-import { IconButton } from '@/components/form/IconButton';
+import { deleteProductAction, fetchAdminProducts } from '@/utils/actions';
+import { formatCurrency } from '@/utils/format';
+import Link from 'next/link';
+import { LuPlus } from 'react-icons/lu';
 
 async function ItemsPage() {
   const items = await fetchAdminProducts();
-  if (items.length === 0) return <EmptyList />;
-  return (
-    <section>
-      <Table>
-        <TableCaption className='capitalize'>
-          total products : {items.length}
-        </TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Product Name</TableHead>
-            <TableHead>Company</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {items.map((item) => {
-            const { id: productId, name, company, price } = item;
-            return (
-              <TableRow key={productId}>
-                <TableCell>
-                  <Link
-                    href={`/products/${productId}`}
-                    className='underline text-muted-foreground tracking-wide capitalize'
-                  >
-                    {name}
-                  </Link>
-                </TableCell>
-                <TableCell>{company}</TableCell>
-                <TableCell>{formatCurrency(price)}</TableCell>
 
-                <TableCell className='flex items-center gap-x-2'>
-                  <Link href={`/admin/products/${productId}/edit`}>
-                    <IconButton actionType='edit'></IconButton>
-                  </Link>
-                  <DeleteProduct productId={productId} />
-                </TableCell>              
+  return (
+    <section className='space-y-8'>
+      <header className='flex flex-col gap-6 rounded-2xl border bg-gradient-to-br from-primary/10 via-card to-card p-6 shadow-sm sm:flex-row sm:items-end sm:justify-between sm:p-8'>
+        <div className='space-y-2'>
+          <p className='text-sm font-semibold uppercase tracking-[0.18em] text-primary'>
+            Catalog management
+          </p>
+          <h1 className='text-3xl font-semibold tracking-tight sm:text-4xl'>
+            My Products
+          </h1>
+          <p className='max-w-xl text-sm text-muted-foreground sm:text-base'>
+            Manage your store listings, prices, and product details.
+          </p>
+        </div>
+        <div className='flex flex-wrap items-center gap-3'>
+          <span className='rounded-xl border bg-background/80 px-4 py-3 text-sm text-muted-foreground shadow-sm'>
+            <span className='font-semibold tabular-nums text-foreground'>
+              {items.length}
+            </span>{' '}
+            {items.length === 1 ? 'product' : 'products'}
+          </span>
+          <Button asChild className='gap-2 shadow-sm'>
+            <Link href='/admin/products/create'>
+              <LuPlus aria-hidden='true' />
+              Add product
+            </Link>
+          </Button>
+        </div>
+      </header>
+
+      <Card className='overflow-hidden rounded-2xl shadow-sm'>
+        <div className='flex flex-col gap-1 border-b bg-muted/30 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6'>
+          <div>
+            <h2 className='font-semibold tracking-tight'>Product catalog</h2>
+            <p className='text-sm text-muted-foreground'>Your active product listings</p>
+          </div>
+          <span className='text-sm tabular-nums text-muted-foreground'>
+            {items.length} {items.length === 1 ? 'listing' : 'listings'}
+          </span>
+        </div>
+
+        <Table className='min-w-[640px]'>
+          <TableCaption className='sr-only'>
+            Your product listings with company, price, and management actions.
+          </TableCaption>
+          <TableHeader>
+            <TableRow className='border-b bg-muted/50 hover:bg-muted/50'>
+              <TableHead className='h-12 px-5 text-xs font-semibold uppercase tracking-wider'>
+                Product Name
+              </TableHead>
+              <TableHead className='h-12 text-xs font-semibold uppercase tracking-wider'>
+                Company
+              </TableHead>
+              <TableHead className='h-12 text-right text-xs font-semibold uppercase tracking-wider'>
+                Price
+              </TableHead>
+              <TableHead className='h-12 px-5 text-right text-xs font-semibold uppercase tracking-wider'>
+                Actions
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {items.length === 0 ? (
+              <TableRow className='hover:bg-transparent'>
+                <TableCell
+                  colSpan={4}
+                  className='h-32 text-center text-muted-foreground'
+                >
+                  No products yet. Add your first product to start your catalog.
+                </TableCell>
               </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+            ) : (
+              items.map((item) => {
+                const { id: productId, name, company, price } = item;
+                return (
+                  <TableRow
+                    key={productId}
+                    className='transition-colors even:bg-muted/20 hover:bg-primary/5 dark:even:bg-muted/10 dark:hover:bg-primary/10'
+                  >
+                    <TableCell className='px-5 py-4'>
+                      <Link
+                        href={`/products/${productId}`}
+                        className='font-medium capitalize text-foreground underline-offset-4 hover:text-primary hover:underline'
+                      >
+                        {name}
+                      </Link>
+                    </TableCell>
+                    <TableCell className='capitalize text-muted-foreground'>
+                      {company}
+                    </TableCell>
+                    <TableCell className='text-right font-semibold tabular-nums'>
+                      {formatCurrency(price)}
+                    </TableCell>
+                    <TableCell className='px-5'>
+                      <div className='flex items-center justify-end gap-1'>
+                        <Link href={`/admin/products/${productId}/edit`}>
+                          <IconButton actionType='edit' />
+                        </Link>
+                        <DeleteProduct productId={productId} />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
+            )}
+          </TableBody>
+        </Table>
+      </Card>
     </section>
   );
 }
