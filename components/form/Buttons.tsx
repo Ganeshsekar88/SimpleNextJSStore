@@ -65,9 +65,13 @@ export const CardSubmitButton = ({ isFavorite }: { isFavorite: boolean }) => {
   );
 };
 
-export const CardSignInButton = () => {
+export const CardSignInButton = ({ redirectUrl }: { redirectUrl?: string }) => {
   return (
-    <SignInButton mode='modal'>
+    <SignInButton
+      mode='modal'
+      forceRedirectUrl={redirectUrl}
+      signUpForceRedirectUrl={redirectUrl}
+    >
       <Button
         type='button'
         size='icon'
@@ -81,9 +85,13 @@ export const CardSignInButton = () => {
   );
 };
 
-export const ProductSignInButton = () => {
+export const ProductSignInButton = ({ redirectUrl }: { redirectUrl?: string }) => {
   return (
-    <SignInButton mode='modal'>
+    <SignInButton
+      mode='modal'
+      forceRedirectUrl={redirectUrl}
+      signUpForceRedirectUrl={redirectUrl}
+    >
       <Button type='button' size='default' className='mt-8'>
         Please Sign In
       </Button>

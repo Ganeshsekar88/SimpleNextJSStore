@@ -42,7 +42,10 @@ async function SingleProductPage({ params }: { params: Promise<{ id: string }> }
         <div>
           <div className='flex gap-x-8 items-center'>
             <h1 className='capitalize text-3xl font-bold'>{name}</h1>
-            <FavoriteToggleButton productId={(await params).id} />
+            <FavoriteToggleButton
+              productId={product.id}
+              signInRedirectUrl={`/products/${product.id}`}
+            />
             <ShareButton productId={(await params).id} name={name} />
           </div>
           <ProductRating productId={(await params).id} />

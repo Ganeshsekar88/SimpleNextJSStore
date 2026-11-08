@@ -25,7 +25,7 @@ function AddToCart({ productId }: { productId: string }) {
           <SubmitButton text='add to cart' size='default' className='mt-8' />
         </FormContainer>
       ) : (
-        <ProductSignInButton />
+        <ProductSignInButton redirectUrl={`/products/${productId}`} />
       )}
     </div>
   );
