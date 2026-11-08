@@ -20,24 +20,26 @@ function ImageInputContainer(props: ImageInputContainerProps) {
   const [isUpdateFormVisible, setUpdateFormVisible] = useState(false);
 
   return (
-    <div className='mb-8'>
+    <div className='space-y-4'>
       <Image
         src={image}
         width={200}
         height={200}
-        className='rounded-md object-cover mb-4 w-[200px] h-[200px]'
+        className='h-[200px] w-[200px] rounded-xl border bg-muted object-cover shadow-sm'
         alt={name}
       />
 
       <Button
+        type='button'
         variant='outline'
         size='sm'
+        className='gap-2'
         onClick={() => setUpdateFormVisible((prev) => !prev)}
       >
-        {text}
+        {isUpdateFormVisible ? 'Cancel image update' : text}
       </Button>
       {isUpdateFormVisible && (
-        <div className='max-w-md mt-4'>
+        <div className='max-w-md rounded-xl border bg-muted/20 p-4'>
           <FormContainer action={action}>
             {props.children}
             <ImageInput />
