@@ -13,7 +13,7 @@ import { auth } from '@clerk/nextjs/server';
 
 async function SingleProductPage({ params }: { params: Promise<{ id: string }> }) {
 
-  const { userId } = await auth.protect();
+  const { userId } = await auth();
   const product = await fetchSingleProduct((await params).id);
 
   const reviewDoesNotExist =
