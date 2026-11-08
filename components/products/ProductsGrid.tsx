@@ -17,14 +17,14 @@ function ProductsGrid({ products }: { products: Product[] }) {
             <Link href={`/products/${productId}`}>
               <Card className='transform group-hover:shadow-xl transition-shadow duration-500'>
                 <CardContent className='p-4'>
-                  <div className='relative h-64 md:h-48 rounded overflow-hidden '>
+                  <div className='relative h-48 sm:h-44 md:h-40 rounded-xl overflow-hidden bg-muted/30'>
                     <Image
                       src={image}
                       alt={name}
                       fill
                       priority={index === 0}
                       sizes='(max-width:768px) 100vw,(max-width:1200px) 50vw,33vw'
-                      className='rounded w-full object-cover transform group-hover:scale-110 transition-transform duration-500'
+                      className='rounded-xl w-full object-contain p-2 transition-opacity duration-300 group-hover:opacity-90'
                     />
                   </div>
                   <div className='mt-4 text-center'>
