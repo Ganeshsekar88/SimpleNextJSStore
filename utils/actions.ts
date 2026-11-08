@@ -1,6 +1,7 @@
 'use server';
 
 import db from '@/utils/db';
+import { ADMIN_PAGE_SIZE } from '@/utils/admin-pagination';
 
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { connection } from 'next/server';
@@ -155,6 +156,14 @@ const getAdminUser = async () => {
   if (user.id !== process.env.ADMIN1_USER_ID && user.id !== process.env.ADMIN2_USER_ID) redirect('/');
   return user;
 };
+
+const normalizeAdminPage = (page: number) => {
+  const numericPage = Number(page);
+  return Number.isFinite(numericPage)
+    ? Math.max(1, Math.floor(numericPage))
+    : 1;
+};
+
 // refactor createProductAction
 
 export const fetchAdminProducts = async () => {
@@ -165,6 +174,22 @@ export const fetchAdminProducts = async () => {
     },
   });
   return products;
+};
+
+export const fetchAdminProductsPage = async (page: number) => {
+  await getAdminUser();
+  const totalItems = await db.product.count();
+  const totalPages = Math.max(1, Math.ceil(totalItems / ADMIN_PAGE_SIZE));
+  const currentPage = Math.min(normalizeAdminPage(page), totalPages);
+  const items = await db.product.findMany({
+    orderBy: {
+      createdAt: 'desc',
+    },
+    skip: (currentPage - 1) * ADMIN_PAGE_SIZE,
+    take: ADMIN_PAGE_SIZE,
+  });
+
+  return { items, totalItems, currentPage, totalPages };
 };
 
 import { revalidatePath } from 'next/cache';
@@ -781,4 +806,22 @@ export const fetchAdminOrders = async () => {
     },
   });
   return orders;
+};
+
+export const fetchAdminOrdersPage = async (page: number) => {
+  await getAdminUser();
+  const where = { isPaid: true };
+  const totalItems = await db.order.count({ where });
+  const totalPages = Math.max(1, Math.ceil(totalItems / ADMIN_PAGE_SIZE));
+  const currentPage = Math.min(normalizeAdminPage(page), totalPages);
+  const orders = await db.order.findMany({
+    where,
+    orderBy: {
+      createdAt: 'desc',
+    },
+    skip: (currentPage - 1) * ADMIN_PAGE_SIZE,
+    take: ADMIN_PAGE_SIZE,
+  });
+
+  return { orders, totalItems, currentPage, totalPages };
 };

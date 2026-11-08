@@ -2,6 +2,7 @@ import { IconButton } from '@/components/form/IconButton';
 import FormContainer from '@/components/form/FormContainer';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import PaginationControls from '@/components/admin/PaginationControls';
 import {
   Table,
   TableBody,
@@ -11,13 +12,26 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { deleteProductAction, fetchAdminProducts } from '@/utils/actions';
+import { deleteProductAction, fetchAdminProductsPage } from '@/utils/actions';
+import { ADMIN_PAGE_SIZE } from '@/utils/admin-pagination';
 import { formatCurrency } from '@/utils/format';
 import Link from 'next/link';
 import { LuPlus } from 'react-icons/lu';
+import { redirect } from 'next/navigation';
 
-async function ItemsPage() {
-  const items = await fetchAdminProducts();
+async function ItemsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string | string[] }>;
+}) {
+  const { page } = await searchParams;
+  const pageValue = Array.isArray(page) ? page[0] : page;
+  const requestedPage = Number.parseInt(pageValue ?? '1', 10);
+  const data = await fetchAdminProductsPage(requestedPage);
+  const { items, totalItems, currentPage, totalPages } = data;
+  if (requestedPage !== currentPage) {
+    redirect(currentPage === 1 ? '/admin/products' : `/admin/products?page=${currentPage}`);
+  }
 
   return (
     <section className='space-y-8'>
@@ -36,9 +50,9 @@ async function ItemsPage() {
         <div className='flex flex-wrap items-center gap-3'>
           <span className='rounded-xl border bg-background/80 px-4 py-3 text-sm text-muted-foreground shadow-sm'>
             <span className='font-semibold tabular-nums text-foreground'>
-              {items.length}
+              {totalItems}
             </span>{' '}
-            {items.length === 1 ? 'product' : 'products'}
+            {totalItems === 1 ? 'product' : 'products'}
           </span>
           <Button asChild className='gap-2 shadow-sm'>
             <Link href='/admin/products/create'>
@@ -56,7 +70,7 @@ async function ItemsPage() {
             <p className='text-sm text-muted-foreground'>Your active product listings</p>
           </div>
           <span className='text-sm tabular-nums text-muted-foreground'>
-            {items.length} {items.length === 1 ? 'listing' : 'listings'}
+            {totalItems} {totalItems === 1 ? 'listing' : 'listings'}
           </span>
         </div>
 
@@ -126,6 +140,14 @@ async function ItemsPage() {
             )}
           </TableBody>
         </Table>
+        <PaginationControls
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          pageSize={ADMIN_PAGE_SIZE}
+          href='/admin/products'
+          itemLabel='products'
+        />
       </Card>
     </section>
   );

@@ -8,11 +8,25 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Card } from '@/components/ui/card';
-import { fetchAdminOrders } from '@/utils/actions';
+import PaginationControls from '@/components/admin/PaginationControls';
+import { fetchAdminOrdersPage } from '@/utils/actions';
+import { ADMIN_PAGE_SIZE } from '@/utils/admin-pagination';
 import { formatCurrency, formatDate } from '@/utils/format';
+import { redirect } from 'next/navigation';
 
-async function SalesPage() {
-  const orders = await fetchAdminOrders();
+async function SalesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string | string[] }>;
+}) {
+  const { page } = await searchParams;
+  const pageValue = Array.isArray(page) ? page[0] : page;
+  const requestedPage = Number.parseInt(pageValue ?? '1', 10);
+  const data = await fetchAdminOrdersPage(requestedPage);
+  const { orders, totalItems, currentPage, totalPages } = data;
+  if (requestedPage !== currentPage) {
+    redirect(currentPage === 1 ? '/admin/sales' : `/admin/sales?page=${currentPage}`);
+  }
 
   return (
     <section className='space-y-8'>
@@ -30,10 +44,10 @@ async function SalesPage() {
         </div>
         <div className='flex w-fit items-center gap-3 rounded-xl border bg-background/80 px-4 py-3 shadow-sm'>
           <span className='flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-lg font-semibold text-primary'>
-            {orders.length}
+            {totalItems}
           </span>
           <span className='text-sm font-medium text-muted-foreground'>
-            {orders.length === 1 ? 'order recorded' : 'orders recorded'}
+            {totalItems === 1 ? 'order recorded' : 'orders recorded'}
           </span>
         </div>
       </header>
@@ -45,7 +59,7 @@ async function SalesPage() {
             <p className='text-sm text-muted-foreground'>Order totals and fulfillment costs</p>
           </div>
           <span className='text-sm tabular-nums text-muted-foreground'>
-            {orders.length} {orders.length === 1 ? 'record' : 'records'}
+            {totalItems} {totalItems === 1 ? 'record' : 'records'}
           </span>
         </div>
 
@@ -132,6 +146,14 @@ async function SalesPage() {
             )}
           </TableBody>
         </Table>
+        <PaginationControls
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          pageSize={ADMIN_PAGE_SIZE}
+          href='/admin/sales'
+          itemLabel='orders'
+        />
       </Card>
     </section>
   );
