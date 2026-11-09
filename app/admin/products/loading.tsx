@@ -1,8 +1,7 @@
-'use client';
+import { AdminProductsSkeleton } from '@/components/admin/AdminPageSkeletons';
 
-import LoadingTable from '@/components/global/LoadingTable';
-
-function loading() {
-  return <LoadingTable />;
+function Loading() {
+  return <AdminProductsSkeleton />;
 }
-export default loading;
+
+export default Loading;
