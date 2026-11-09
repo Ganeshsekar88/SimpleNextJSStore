@@ -87,8 +87,29 @@ async function SalesPage({
                   <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>Customer</p>
                   <p className='break-all text-sm font-medium'>{email}</p>
                 </div>
-                <div className='grid min-w-0 grid-cols-2 gap-x-4 gap-y-3 text-sm'>
+                {/* <div className='grid min-w-0 grid-cols-2 gap-x-4 gap-y-3 text-sm'>
                   <div className='col-span-2 min-w-0'>
+                    <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>Products</p>
+                    <div className='mt-2'>
+                      <OrderProducts items={orderItems} legacyCount={products} />
+                    </div>
+                  </div>
+                  <div className='min-w-0'>
+                    <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>Order total</p>
+                    <p className='break-words font-semibold tabular-nums'>{formatCurrency(orderTotal)}</p>
+                  </div>
+                  <div className='min-w-0'>
+                    <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>Tax</p>
+                    <p className='break-words tabular-nums text-muted-foreground'>{formatCurrency(tax)}</p>
+                  </div>
+                  <div className='min-w-0'>
+                    <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>Shipping</p>
+                    <p className='break-words tabular-nums text-muted-foreground'>{formatCurrency(shipping)}</p>
+                  </div>
+                </div> */}
+
+                <div className='flex items-start justify-between gap-4'>
+                  <div className='min-w-0 flex-1'>
                     <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>Products</p>
                     <div className='mt-2'>
                       <OrderProducts items={orderItems} legacyCount={products} />
@@ -96,8 +117,10 @@ async function SalesPage({
                   </div>
                   <div className='min-w-0 text-right'>
                     <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>Order total</p>
-                    <p className='break-words font-semibold tabular-nums'>{formatCurrency(orderTotal)}</p>
+                    <p className='break-words text-base font-semibold tabular-nums'>{formatCurrency(orderTotal)}</p>
                   </div>
+                </div>
+                <div className='grid min-w-0 grid-cols-2 gap-x-4 gap-y-3 text-sm'>
                   <div className='min-w-0'>
                     <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>Tax</p>
                     <p className='break-words tabular-nums text-muted-foreground'>{formatCurrency(tax)}</p>
