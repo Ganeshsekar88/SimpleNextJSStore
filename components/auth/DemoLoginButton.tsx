@@ -19,16 +19,28 @@ function DemoLoginButton() {
 
     try {
       const response = await fetch('/api/demo-sign-in', { method: 'POST' });
-      const payload = await response.json();
+      const payload = (await response.json().catch(() => null)) as {
+        token?: unknown;
+        error?: unknown;
+      } | null;
 
-      if (!response.ok || typeof payload.token !== 'string') {
-        throw new Error('Demo sign-in is unavailable right now.');
+      if (!response.ok) {
+        throw new Error(
+          typeof payload?.error === 'string'
+            ? payload.error
+            : `Demo token endpoint failed (${response.status}).`
+        );
+      }
+      if (typeof payload?.token !== 'string') {
+        throw new Error('The demo token endpoint returned no token.');
       }
 
       const { error } = await signIn.ticket({ ticket: payload.token });
       if (error) throw new Error(error.message);
       if (signIn.status !== 'complete') {
-        throw new Error('The demo account needs additional Clerk setup.');
+        throw new Error(
+          `Clerk sign-in stopped at "${signIn.status}". The demo account may have MFA or a required session task.`
+        );
       }
 
       await signIn.finalize({
@@ -41,9 +53,9 @@ function DemoLoginButton() {
           }
         },
       });
-    } catch {
+    } catch (error) {
       setErrorMessage(
-        'Demo sign-in could not finish. Check that the demo account has no MFA or required session tasks.'
+        error instanceof Error ? error.message : 'Demo sign-in could not finish.'
       );
       setIsSigningIn(false);
     }
