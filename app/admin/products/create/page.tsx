@@ -19,13 +19,13 @@ function CreateProduct() {
   const description = faker.lorem.paragraph({ min: 10, max: 12 });
 
   return (
-    <section className='space-y-8'>
+    <section className='min-w-0 space-y-6 sm:space-y-8'>
       <header className='flex flex-col gap-6 rounded-2xl border bg-gradient-to-br from-primary/10 via-card to-card p-6 shadow-sm sm:flex-row sm:items-end sm:justify-between sm:p-8'>
         <div className='space-y-2'>
           <p className='text-sm font-semibold uppercase tracking-[0.18em] text-primary'>
             Catalog management
           </p>
-          <h1 className='text-3xl font-semibold tracking-tight sm:text-4xl'>
+          <h1 className='break-words text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl'>
             Create Product
           </h1>
           <p className='max-w-xl text-sm text-muted-foreground sm:text-base'>
@@ -40,16 +40,16 @@ function CreateProduct() {
         </Button>
       </header>
 
-      <Card className='overflow-hidden rounded-2xl shadow-sm'>
+      <Card className='min-w-0 overflow-hidden rounded-2xl shadow-sm'>
         <div className='border-b bg-muted/30 px-5 py-4 sm:px-6'>
           <h2 className='font-semibold tracking-tight'>Product details</h2>
           <p className='text-sm text-muted-foreground'>
             Provide the product information customers will see.
           </p>
         </div>
-        <div className='p-5 sm:p-8'>
+        <div className='min-w-0 p-4 sm:p-8'>
           <FormContainer action={createProductAction}>
-            <div className='grid gap-x-6 gap-y-5 md:grid-cols-2'>
+            <div className='grid min-w-0 gap-x-6 gap-y-5 md:grid-cols-2'>
               <FormInput
                 type='text'
                 name='name'
@@ -65,7 +65,7 @@ function CreateProduct() {
               <PriceInput />
               <ImageInput />
             </div>
-            <div className='mt-5'>
+            <div className='mt-5 min-w-0'>
               <TextAreaInput
                 name='description'
                 labelText='product description'

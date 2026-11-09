@@ -1,7 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
-function PageIntroSkeleton({ kind }: { kind: 'products' | 'sales' | 'edit' }) {
+function PageIntroSkeleton({ kind }: { kind: 'products' | 'sales' | 'edit' | 'create' }) {
   return (
     <header className='flex flex-col gap-6 rounded-2xl border bg-gradient-to-br from-primary/10 via-card to-card p-6 shadow-sm sm:flex-row sm:items-end sm:justify-between sm:p-8'>
       <div className='w-full min-w-0 space-y-2' aria-hidden='true'>
@@ -19,7 +19,7 @@ function PageIntroSkeleton({ kind }: { kind: 'products' | 'sales' | 'edit' }) {
         {kind === 'sales' && (
           <Skeleton className='h-16 w-48 rounded-xl' />
         )}
-        {kind === 'edit' && (
+        {(kind === 'edit' || kind === 'create') && (
           <Skeleton className='h-10 w-40 rounded-md' />
         )}
         {kind === 'products' && (
@@ -245,6 +245,45 @@ export function AdminProductEditSkeleton() {
           </div>
         </Card>
       </div>
+    </section>
+  );
+}
+
+export function AdminProductCreateSkeleton() {
+  return (
+    <section className='min-w-0 space-y-6 sm:space-y-8' aria-busy='true' aria-label='Loading new product form'>
+      <PageIntroSkeleton kind='create' />
+      <Card className='min-w-0 overflow-hidden rounded-2xl shadow-sm'>
+        <div className='space-y-2 border-b bg-muted/30 px-5 py-4 sm:px-6' aria-hidden='true'>
+          <Skeleton className='h-5 w-32' />
+          <Skeleton className='h-4 w-64 max-w-full' />
+        </div>
+        <div className='min-w-0 space-y-5 p-4 sm:p-8'>
+          <div className='grid min-w-0 gap-x-6 gap-y-5 md:grid-cols-2'>
+            <FormFieldSkeleton />
+            <FormFieldSkeleton />
+            <FormFieldSkeleton />
+            <div className='space-y-2' aria-hidden='true'>
+              <Skeleton className='h-4 w-12' />
+              <Skeleton className='h-9 w-full' />
+            </div>
+          </div>
+          <div className='space-y-2' aria-hidden='true'>
+            <Skeleton className='h-4 w-36' />
+            <Skeleton className='h-32 w-full rounded-md' />
+          </div>
+          <div className='flex flex-col gap-3 rounded-xl border bg-muted/20 p-4 sm:flex-row sm:items-center sm:justify-between' aria-hidden='true'>
+            <div className='space-y-2'>
+              <Skeleton className='h-4 w-40' />
+              <Skeleton className='h-4 w-64 max-w-full' />
+            </div>
+            <Skeleton className='h-10 w-24 rounded-md' />
+          </div>
+          <div className='flex justify-end border-t pt-6' aria-hidden='true'>
+            <Skeleton className='h-10 w-40 rounded-md' />
+          </div>
+        </div>
+      </Card>
     </section>
   );
 }

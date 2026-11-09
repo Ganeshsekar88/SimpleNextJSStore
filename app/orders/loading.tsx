@@ -1,8 +1,7 @@
-'use client';
+import { OrdersPageSkeleton } from '@/components/orders/OrdersPageSkeleton';
 
-import LoadingTable from '@/components/global/LoadingTable';
-
-function loading() {
-  return <LoadingTable />;
+function Loading() {
+  return <OrdersPageSkeleton />;
 }
-export default loading;
+
+export default Loading;
