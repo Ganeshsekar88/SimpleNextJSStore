@@ -130,16 +130,48 @@ function SalesMobileRows() {
       {Array.from({ length: 5 }, (_, index) => (
         <div key={index} className='min-w-0 space-y-4 p-4 sm:p-5'>
           <div className='space-y-2'>
-            <Skeleton className='h-3 w-16' />
+            <Skeleton className='h-3 w-20' />
             <Skeleton className='h-4 w-52 max-w-full' />
           </div>
-          <div className='grid grid-cols-2 gap-x-4 gap-y-3'>
-            {Array.from({ length: 4 }, (_, valueIndex) => (
-              <div key={valueIndex} className='min-w-0 space-y-2'>
-                <Skeleton className='h-3 w-16 max-w-full' />
-                <Skeleton className='h-4 w-20 max-w-full' />
+          <div className='flex items-start justify-between gap-4'>
+            <div className='min-w-0 flex-1 space-y-2'>
+              <Skeleton className='h-3 w-16' />
+              <div className='mt-2 space-y-1.5'>
+                <div className='flex items-start justify-between gap-2'>
+                  <Skeleton className='h-4 w-24 max-w-[70%]' />
+                  <Skeleton className='h-3 w-10 shrink-0' />
+                </div>
+                <div className='flex items-start justify-between gap-2'>
+                  <Skeleton className='h-4 w-20 max-w-[70%]' />
+                  <Skeleton className='h-3 w-10 shrink-0' />
+                </div>
               </div>
-            ))}
+            </div>
+            <div className='min-w-0 space-y-2 text-right'>
+              <Skeleton className='ml-auto h-3 w-20' />
+              <Skeleton className='ml-auto h-5 w-24 max-w-full' />
+            </div>
+          </div>
+          <div className='grid min-w-0 grid-cols-2 gap-x-4 gap-y-3'>
+            <div className='min-w-0 space-y-2'>
+              <Skeleton className='h-3 w-8' />
+              <Skeleton className='h-4 w-20 max-w-full' />
+            </div>
+            <div className='min-w-0 space-y-2 text-right'>
+              <Skeleton className='ml-auto h-3 w-16' />
+              <Skeleton className='ml-auto h-4 w-20 max-w-full' />
+            </div>
+          </div>
+          <div className='grid min-w-0 grid-cols-2 gap-x-4 gap-y-3 border-t pt-3'>
+            <div className='min-w-0 space-y-2'>
+              <Skeleton className='h-3 w-24 max-w-full' />
+              <Skeleton className='h-4 w-20 max-w-full' />
+            </div>
+            <div className='min-w-0 space-y-2'>
+              <Skeleton className='h-3 w-16 max-w-full' />
+              <Skeleton className='h-3 w-full max-w-32' />
+              <Skeleton className='h-3 w-3/4 max-w-24' />
+            </div>
           </div>
           <div className='flex items-center justify-between gap-3 border-t pt-3'>
             <Skeleton className='h-3 w-10' />
@@ -152,24 +184,36 @@ function SalesMobileRows() {
 }
 
 function SalesDesktopRows() {
+  const columns = 'grid-cols-[1.7fr_1.6fr_1fr_0.7fr_0.9fr_1.1fr_1.8fr_1.1fr]';
+
   return (
     <div className='hidden overflow-x-auto md:block' aria-hidden='true'>
-      <div className='min-w-[820px]'>
-        <div className='grid grid-cols-[2fr_0.8fr_1.2fr_1fr_1.2fr_1.4fr] items-center gap-4 border-b bg-muted/50 px-5 py-3'>
-          {['Customer', 'Products', 'Order total', 'Tax', 'Shipping', 'Date'].map((label) => (
-            <Skeleton key={label} className='h-3 w-16 max-w-full' />
-          ))}
+      <div className='min-w-[1250px]'>
+        <div className={`grid ${columns} items-center gap-4 border-b bg-muted/50 px-5 py-3`}>
+          <Skeleton className='h-3 w-20 max-w-full' />
+          <Skeleton className='h-3 w-28 max-w-full' />
+          <Skeleton className='ml-auto h-3 w-20 max-w-full' />
+          <Skeleton className='ml-auto h-3 w-8 max-w-full' />
+          <Skeleton className='ml-auto h-3 w-16 max-w-full' />
+          <Skeleton className='mx-auto h-3 w-28 max-w-full' />
+          <Skeleton className='ml-auto h-3 w-20 max-w-full' />
+          <Skeleton className='ml-auto h-3 w-12 max-w-full' />
         </div>
         {Array.from({ length: 5 }, (_, index) => (
           <div
             key={index}
-            className='grid grid-cols-[2fr_0.8fr_1.2fr_1fr_1.2fr_1.4fr] items-center gap-4 border-b px-5 py-4 last:border-0'
+            className={`grid ${columns} items-center gap-4 border-b px-5 py-4 last:border-0`}
           >
             <Skeleton className='h-4 w-40 max-w-full' />
-            <Skeleton className='mx-auto h-8 w-10 rounded-full' />
+            <div className='space-y-1.5'>
+              <Skeleton className='h-4 w-36 max-w-full' />
+              <Skeleton className='h-4 w-28 max-w-full' />
+            </div>
             <Skeleton className='ml-auto h-4 w-20' />
             <Skeleton className='ml-auto h-4 w-16' />
             <Skeleton className='ml-auto h-4 w-20' />
+            <Skeleton className='mx-auto h-6 w-24 rounded-full' />
+            <Skeleton className='ml-auto h-4 w-full max-w-40' />
             <Skeleton className='ml-auto h-4 w-28 max-w-full' />
           </div>
         ))}
