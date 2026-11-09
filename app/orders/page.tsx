@@ -72,7 +72,18 @@ async function OrdersPage({
               No orders yet. Your purchases will appear here.
             </p>
           ) : (
-            orders.map(({ id, products, orderItems, orderTotal, tax, shipping, createdAt }) => (
+            // orders.map(({ id, products, orderItems, orderTotal, tax, shipping, createdAt }) => (
+            orders.map(({
+              id,
+              products,
+              orderItems,
+              orderTotal,
+              tax,
+              shipping,
+              createdAt,
+              paymentId,
+              paymentMethod
+            }) => (
               <article key={id} className='min-w-0 space-y-4 p-4 sm:p-5'>
                 <div className='flex items-start justify-between gap-4'>
                   <div className='min-w-0 flex-1'>
@@ -96,91 +107,141 @@ async function OrdersPage({
                     <p className='break-words tabular-nums text-muted-foreground'>{formatCurrency(shipping)}</p>
                   </div>
                 </div>
+                <div className='grid min-w-0 grid-cols-2 gap-x-4 gap-y-3 text-sm border-t pt-3'>
+
+                  <div className='min-w-0'>
+                    <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+                      Payment Method
+                    </p>
+
+                    <p className='mt-1 font-medium capitalize'>
+                      {paymentMethod ?? 'N/A'}
+                    </p>
+                  </div>
+
+                  <div className='min-w-0'>
+                    <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+                      Payment ID
+                    </p>
+
+                    <p
+                      className='mt-1 break-all text-xs text-muted-foreground'
+                      title={paymentId ?? 'N/A'}
+                    >
+                      {paymentId ?? 'N/A'}
+                    </p>
+                  </div>
+
+                </div>
                 <div className='flex items-center justify-between gap-3 border-t pt-3 text-sm'>
                   <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>Date</p>
                   <time className='text-right text-muted-foreground' dateTime={createdAt.toISOString()}>
                     {formatDate(createdAt)}
                   </time>
                 </div>
+
               </article>
             ))
           )}
         </div>
 
         <div className='hidden max-w-full overflow-x-auto md:block'>
-        <Table className='min-w-[800px]'>
-          <TableCaption className='sr-only'>
-            Your past orders, including products and quantities, totals, tax, shipping, and date.
-          </TableCaption>
-          <TableHeader>
-            <TableRow className='border-b bg-muted/50 hover:bg-muted/50'>
-              <TableHead className='h-12 px-5 text-xs font-semibold uppercase tracking-wider'>
-                Products
-              </TableHead>
-              <TableHead className='h-12 text-right text-xs font-semibold uppercase tracking-wider'>
-                Order Total
-              </TableHead>
-              <TableHead className='h-12 text-right text-xs font-semibold uppercase tracking-wider'>
-                Tax
-              </TableHead>
-              <TableHead className='h-12 text-right text-xs font-semibold uppercase tracking-wider'>
-                Shipping
-              </TableHead>
-              <TableHead className='h-12 px-5 text-right text-xs font-semibold uppercase tracking-wider'>
-                Date
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {orders.length === 0 ? (
-              <TableRow className='hover:bg-transparent'>
-                <TableCell
-                  colSpan={5}
-                  className='h-32 text-center text-muted-foreground'
-                >
-                  No orders yet. Your purchases will appear here.
-                </TableCell>
-              </TableRow>
-            ) : (
-              orders.map((order) => {
-                const {
-                  id,
-                  products,
-                  orderItems,
-                  orderTotal,
-                  tax,
-                  shipping,
-                  createdAt,
-                } = order;
+          <Table className='min-w-[1100px]'>
+            <TableCaption className='sr-only'>
+              Your past orders, including products and quantities, totals, tax, shipping, and date.
+            </TableCaption>
+            <TableHeader>
+              <TableRow className='border-b bg-muted/50 hover:bg-muted/50'>
+                <TableHead className='h-12 px-5 text-xs font-semibold uppercase tracking-wider'>
+                  Products
+                </TableHead>
+                <TableHead className='h-12 text-right text-xs font-semibold uppercase tracking-wider'>
+                  Order Total
+                </TableHead>
+                <TableHead className='h-12 text-right text-xs font-semibold uppercase tracking-wider'>
+                  Tax
+                </TableHead>
+                <TableHead className='h-12 text-right text-xs font-semibold uppercase tracking-wider'>
+                  Shipping
+                </TableHead>
+                <TableHead className='h-12 text-center text-xs font-semibold uppercase tracking-wider'>
+                  Payment Method
+                </TableHead>
 
-                return (
-                  <TableRow
-                    key={id}
-                    className='transition-colors even:bg-muted/20 hover:bg-primary/5 dark:even:bg-muted/10 dark:hover:bg-primary/10'
+                <TableHead className='h-12 px-5 text-right text-xs font-semibold uppercase tracking-wider'>
+                  Payment ID
+                </TableHead>
+                <TableHead className='h-12 px-5 text-right text-xs font-semibold uppercase tracking-wider'>
+                  Date
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {orders.length === 0 ? (
+                <TableRow className='hover:bg-transparent'>
+                  <TableCell
+                    colSpan={7}
+                    className='h-32 text-center text-muted-foreground'
                   >
-                    <TableCell className='min-w-[280px] max-w-[420px] px-5 py-4 align-top'>
-                      <OrderProducts items={orderItems} legacyCount={products} />
-                    </TableCell>
-                    <TableCell className='text-right font-semibold tabular-nums'>
-                      {formatCurrency(orderTotal)}
-                    </TableCell>
-                    <TableCell className='text-right tabular-nums text-muted-foreground'>
-                      {formatCurrency(tax)}
-                    </TableCell>
-                    <TableCell className='text-right tabular-nums text-muted-foreground'>
-                      {formatCurrency(shipping)}
-                    </TableCell>
-                    <TableCell className='px-5 text-right text-sm text-muted-foreground'>
-                      <time dateTime={createdAt.toISOString()}>
-                        {formatDate(createdAt)}
-                      </time>
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            )}
-          </TableBody>
-        </Table>
+                    No orders yet. Your purchases will appear here.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                orders.map((order) => {
+                  const {
+                    id,
+                    products,
+                    orderItems,
+                    orderTotal,
+                    tax,
+                    shipping,
+                    createdAt,
+                    paymentId,
+                    paymentMethod,
+                  } = order;
+
+                  return (
+                    <TableRow
+                      key={id}
+                      className='transition-colors even:bg-muted/20 hover:bg-primary/5 dark:even:bg-muted/10 dark:hover:bg-primary/10'
+                    >
+                      <TableCell className='min-w-[150px] max-w-[300px] px-3 py-4 align-top'>
+                        <OrderProducts items={orderItems} legacyCount={products} />
+                      </TableCell>
+                      <TableCell className='text-right font-semibold tabular-nums'>
+                        {formatCurrency(orderTotal)}
+                      </TableCell>
+                      <TableCell className='text-right tabular-nums text-muted-foreground'>
+                        {formatCurrency(tax)}
+                      </TableCell>
+                      <TableCell className='text-right tabular-nums text-muted-foreground'>
+                        {formatCurrency(shipping)}
+                      </TableCell>
+                      <TableCell className='text-center'>
+                        <span className='inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-medium capitalize text-primary'>
+                          {paymentMethod ?? 'N/A'}
+                        </span>
+                      </TableCell>
+
+                      <TableCell className='max-w-[200px] px-5 text-right'>
+                        <span
+                          className='block truncate text-xs text-muted-foreground'
+                          title={paymentId ?? 'N/A'}
+                        >
+                          {paymentId ?? 'N/A'}
+                        </span>
+                      </TableCell>
+                      <TableCell className='px-5 text-right text-sm text-muted-foreground'>
+                        <time dateTime={createdAt.toISOString()}>
+                          {formatDate(createdAt)}
+                        </time>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
         </div>
         <PaginationControls
           currentPage={currentPage}

@@ -70,7 +70,18 @@ async function SalesPage({
               No sales yet. Completed orders will appear here.
             </p>
           ) : (
-            orders.map(({ id, products, orderItems, orderTotal, tax, shipping, createdAt, email }) => (
+            orders.map(({
+              id,
+              products,
+              orderItems,
+              orderTotal,
+              tax,
+              shipping,
+              createdAt,
+              email,
+              paymentId,
+              paymentMethod
+            }) => (
               <article key={id} className='min-w-0 space-y-4 p-4 sm:p-5'>
                 <div className='min-w-0'>
                   <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>Customer</p>
@@ -96,6 +107,32 @@ async function SalesPage({
                     <p className='break-words tabular-nums text-muted-foreground'>{formatCurrency(shipping)}</p>
                   </div>
                 </div>
+                <div className='grid min-w-0 grid-cols-2 gap-x-4 gap-y-3 text-sm border-t pt-3'>
+
+                  <div className='min-w-0'>
+                    <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+                      Payment Method
+                    </p>
+
+                    <p className='mt-1 font-medium capitalize'>
+                      {paymentMethod ?? 'N/A'}
+                    </p>
+                  </div>
+
+                  <div className='min-w-0'>
+                    <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+                      Payment ID
+                    </p>
+
+                    <p
+                      className='mt-1 break-all text-xs text-muted-foreground'
+                      title={paymentId ?? 'N/A'}
+                    >
+                      {paymentId ?? 'N/A'}
+                    </p>
+                  </div>
+
+                </div>
                 <div className='flex items-center justify-between gap-3 border-t pt-3 text-sm'>
                   <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>Date</p>
                   <time className='text-right text-muted-foreground' dateTime={createdAt.toISOString()}>
@@ -108,88 +145,111 @@ async function SalesPage({
         </div>
 
         <div className='hidden max-w-full overflow-x-auto md:block'>
-        <Table className='min-w-[980px]'>
-          <TableCaption className='sr-only'>
-            Customer orders with products and quantities, order total, tax, shipping, and date.
-          </TableCaption>
-          <TableHeader>
-            <TableRow className='border-b bg-muted/50 hover:bg-muted/50'>
-              <TableHead className='h-12 px-5 text-xs font-semibold uppercase tracking-wider'>
-                Customer
-              </TableHead>
-              <TableHead className='h-12 text-center text-xs font-semibold uppercase tracking-wider'>
-                Products
-              </TableHead>
-              <TableHead className='h-12 text-right text-xs font-semibold uppercase tracking-wider'>
-                Order Total
-              </TableHead>
-              <TableHead className='h-12 text-right text-xs font-semibold uppercase tracking-wider'>
-                Tax
-              </TableHead>
-              <TableHead className='h-12 text-right text-xs font-semibold uppercase tracking-wider'>
-                Shipping
-              </TableHead>
-              <TableHead className='h-12 px-5 text-right text-xs font-semibold uppercase tracking-wider'>
-                Date
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {orders.length === 0 ? (
-              <TableRow className='hover:bg-transparent'>
-                <TableCell
-                  colSpan={6}
-                  className='h-32 text-center text-muted-foreground'
-                >
-                  No sales yet. Completed orders will appear here.
-                </TableCell>
-              </TableRow>
-            ) : (
-              orders.map((order) => {
-                const {
-                  id,
-                  products,
-                  orderItems,
-                  orderTotal,
-                  tax,
-                  shipping,
-                  createdAt,
-                  email,
-                } = order;
+          <Table className='min-w-[1250px]'>
+            <TableCaption className='sr-only'>
+              Customer orders with products and quantities, order total, tax, shipping, and date.
+            </TableCaption>
+            <TableHeader>
+              <TableRow className='border-b bg-muted/50 hover:bg-muted/50'>
+                <TableHead className='h-12 px-5 text-xs font-semibold uppercase tracking-wider'>
+                  Customer
+                </TableHead>
+                <TableHead className='h-12 text-center text-xs font-semibold uppercase tracking-wider'>
+                  Products Information
+                </TableHead>
+                <TableHead className='h-12 text-right text-xs font-semibold uppercase tracking-wider'>
+                  Order Total
+                </TableHead>
+                <TableHead className='h-12 text-right text-xs font-semibold uppercase tracking-wider'>
+                  Tax
+                </TableHead>
+                <TableHead className='h-12 text-right text-xs font-semibold uppercase tracking-wider'>
+                  Shipping
+                </TableHead>
+                <TableHead className='h-12 text-center text-xs font-semibold uppercase tracking-wider'>
+                  Payment Method
+                </TableHead>
 
-                return (
-                  <TableRow
-                    key={id}
-                    className='transition-colors even:bg-muted/20 hover:bg-primary/5 dark:even:bg-muted/10 dark:hover:bg-primary/10'
+                <TableHead className='h-12 px-5 text-right text-xs font-semibold uppercase tracking-wider'>
+                  Payment ID
+                </TableHead>
+                <TableHead className='h-12 px-5 text-right text-xs font-semibold uppercase tracking-wider'>
+                  Date
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {orders.length === 0 ? (
+                <TableRow className='hover:bg-transparent'>
+                  <TableCell
+                    colSpan={8}
+                    className='h-32 text-center text-muted-foreground'
                   >
-                    <TableCell className='max-w-[240px] px-5 py-4 font-medium'>
-                      <span className='block truncate' title={email}>
-                        {email}
-                      </span>
-                    </TableCell>
-                    <TableCell className='min-w-[300px] max-w-[440px] py-4 align-top'>
-                      <OrderProducts items={orderItems} legacyCount={products} />
-                    </TableCell>
-                    <TableCell className='text-right font-semibold tabular-nums'>
-                      {formatCurrency(orderTotal)}
-                    </TableCell>
-                    <TableCell className='text-right tabular-nums text-muted-foreground'>
-                      {formatCurrency(tax)}
-                    </TableCell>
-                    <TableCell className='text-right tabular-nums text-muted-foreground'>
-                      {formatCurrency(shipping)}
-                    </TableCell>
-                    <TableCell className='px-5 text-right text-sm text-muted-foreground'>
-                      <time dateTime={createdAt.toISOString()}>
-                        {formatDate(createdAt)}
-                      </time>
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            )}
-          </TableBody>
-        </Table>
+                    No sales yet. Completed orders will appear here.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                orders.map((order) => {
+                  const {
+                    id,
+                    products,
+                    orderItems,
+                    orderTotal,
+                    tax,
+                    shipping,
+                    createdAt,
+                    email,
+                    paymentId,
+                    paymentMethod,
+                  } = order;
+
+                  return (
+                    <TableRow
+                      key={id}
+                      className='transition-colors even:bg-muted/20 hover:bg-primary/5 dark:even:bg-muted/10 dark:hover:bg-primary/10'
+                    >
+                      <TableCell className='max-w-[240px] px-5 py-4 font-medium'>
+                        <span className='block truncate' title={email}>
+                          {email}
+                        </span>
+                      </TableCell>
+                      <TableCell className='min-w-[250px] max-w-[400px] py-4 align-top'>
+                        <OrderProducts items={orderItems} legacyCount={products} />
+                      </TableCell>
+                      <TableCell className='text-right max-w-[240px] font-semibold tabular-nums'>
+                        {formatCurrency(orderTotal)}
+                      </TableCell>
+                      <TableCell className='text-right tabular-nums text-muted-foreground'>
+                        {formatCurrency(tax)}
+                      </TableCell>
+                      <TableCell className='text-right tabular-nums text-muted-foreground'>
+                        {formatCurrency(shipping)}
+                      </TableCell>
+                      <TableCell className='text-center'>
+                        <span className='inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-medium capitalize text-primary'>
+                          {paymentMethod ?? 'N/A'}
+                        </span>
+                      </TableCell>
+
+                      <TableCell className='max-w-[350px] px-5 text-right'>
+                        <span
+                          className='block truncate text-xs text-muted-foreground'
+                          title={paymentId ?? 'N/A'}
+                        >
+                          {paymentId ?? 'N/A'}
+                        </span>
+                      </TableCell>
+                      <TableCell className='px-5 text-right text-sm text-muted-foreground'>
+                        <time dateTime={createdAt.toISOString()}>
+                          {formatDate(createdAt)}
+                        </time>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
         </div>
         <PaginationControls
           currentPage={currentPage}

@@ -23,7 +23,7 @@ function OrderProducts({
   return (
     <ul className='space-y-1.5 text-sm'>
       {items.map(({ id, productName, quantity }) => (
-        <li key={id} className='flex items-start justify-between gap-3'>
+        <li key={id} className='flex items-start justify-between'>
           <span className='min-w-0 break-words'>{productName}</span>
           <span className='shrink-0 text-xs text-muted-foreground'>
             Qty {quantity}
