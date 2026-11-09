@@ -20,7 +20,7 @@ function OrdersIntroSkeleton() {
 function OrdersMobileSkeleton() {
   return (
     <div className='divide-y md:hidden' aria-hidden='true'>
-      {Array.from({ length: 5 }, (_, index) => (
+      {Array.from({ length: 6 }, (_, index) => (
         <article key={index} className='min-w-0 space-y-4 p-4 sm:p-5'>
           <div className='flex items-center justify-between gap-4'>
             <div className='space-y-2'>
@@ -63,7 +63,7 @@ function OrdersDesktopSkeleton() {
           <Skeleton className='ml-auto h-3 w-16' />
           <Skeleton className='ml-auto h-3 w-12' />
         </div>
-        {Array.from({ length: 5 }, (_, index) => (
+        {Array.from({ length: 6 }, (_, index) => (
           <div
             key={index}
             className='grid grid-cols-[1.3fr_1.2fr_1fr_1.2fr_1.6fr] items-center gap-4 border-b px-5 py-4 last:border-0'
@@ -75,6 +75,19 @@ function OrdersDesktopSkeleton() {
             <Skeleton className='ml-auto h-4 w-32 max-w-full' />
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+function OrdersPaginationSkeleton() {
+  return (
+    <div className='flex flex-col gap-3 border-t bg-muted/20 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6' aria-hidden='true'>
+      <Skeleton className='h-4 w-36' />
+      <div className='flex items-center gap-2'>
+        <Skeleton className='h-8 w-16' />
+        <Skeleton className='h-4 w-24' />
+        <Skeleton className='h-8 w-12' />
       </div>
     </div>
   );
@@ -94,6 +107,7 @@ export function OrdersPageSkeleton() {
         </div>
         <OrdersMobileSkeleton />
         <OrdersDesktopSkeleton />
+        <OrdersPaginationSkeleton />
       </Card>
     </section>
   );

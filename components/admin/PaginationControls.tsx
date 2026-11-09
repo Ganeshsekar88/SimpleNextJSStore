@@ -20,6 +20,12 @@ function PaginationControls({
 }: PaginationControlsProps) {
   const startItem = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   const endItem = Math.min(currentPage * pageSize, totalItems);
+  const pageHref = (page: number) => {
+    const [pathname, queryString = ''] = href.split('?');
+    const query = new URLSearchParams(queryString);
+    query.set('page', String(page));
+    return `${pathname}?${query.toString()}`;
+  };
 
   return (
     <div className='flex flex-col gap-3 border-t bg-muted/20 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6'>
@@ -35,7 +41,7 @@ function PaginationControls({
         >
           {currentPage > 1 ? (
             <Button asChild variant='outline' size='sm'>
-              <Link href={`${href}?page=${currentPage - 1}`} rel='prev'>
+              <Link href={pageHref(currentPage - 1)} rel='prev'>
                 Previous
               </Link>
             </Button>
@@ -49,7 +55,7 @@ function PaginationControls({
           </span>
           {currentPage < totalPages ? (
             <Button asChild variant='outline' size='sm'>
-              <Link href={`${href}?page=${currentPage + 1}`} rel='next'>
+              <Link href={pageHref(currentPage + 1)} rel='next'>
                 Next
               </Link>
             </Button>

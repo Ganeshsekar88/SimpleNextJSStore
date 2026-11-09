@@ -2,6 +2,11 @@
 
 import db from '@/utils/db';
 import { ADMIN_PAGE_SIZE } from '@/utils/admin-pagination';
+import {
+  normalizePaginationPage,
+  ORDERS_PAGE_SIZE,
+  PRODUCTS_PAGE_SIZE,
+} from '@/utils/pagination';
 
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { connection } from 'next/server';
@@ -52,6 +57,32 @@ export const fetchAllProducts = async ({ search = '' }: { search: string }) => {
       createdAt: 'desc',
     },
   });
+};
+
+export const fetchProductsPage = async ({
+  search = '',
+  page,
+}: {
+  search: string;
+  page: number;
+}) => {
+  const where = {
+    OR: [
+      { name: { contains: search, mode: 'insensitive' as const } },
+      { company: { contains: search, mode: 'insensitive' as const } },
+    ],
+  };
+  const totalItems = await db.product.count({ where });
+  const totalPages = Math.max(1, Math.ceil(totalItems / PRODUCTS_PAGE_SIZE));
+  const currentPage = Math.min(normalizePaginationPage(page), totalPages);
+  const items = await db.product.findMany({
+    where,
+    orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
+    skip: (currentPage - 1) * PRODUCTS_PAGE_SIZE,
+    take: PRODUCTS_PAGE_SIZE,
+  });
+
+  return { items, totalItems, currentPage, totalPages };
 };
 
 import { redirect } from 'next/navigation';
@@ -792,6 +823,25 @@ export const fetchUserOrders = async () => {
     },
   });
   return orders;
+};
+
+export const fetchUserOrdersPage = async (page: number) => {
+  const user = await getAuthUser();
+  const where = {
+    clerkId: user.id,
+    isPaid: true,
+  };
+  const totalItems = await db.order.count({ where });
+  const totalPages = Math.max(1, Math.ceil(totalItems / ORDERS_PAGE_SIZE));
+  const currentPage = Math.min(normalizePaginationPage(page), totalPages);
+  const orders = await db.order.findMany({
+    where,
+    orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
+    skip: (currentPage - 1) * ORDERS_PAGE_SIZE,
+    take: ORDERS_PAGE_SIZE,
+  });
+
+  return { orders, totalItems, currentPage, totalPages };
 };
 
 export const fetchAdminOrders = async () => {
