@@ -10,6 +10,7 @@ import {
 
 import { Card } from '@/components/ui/card';
 import PaginationControls from '@/components/admin/PaginationControls';
+import OrderProducts from '@/components/orders/OrderProducts';
 import { fetchUserOrdersPage } from '@/utils/actions';
 import { ORDERS_PAGE_SIZE } from '@/utils/pagination';
 import { formatCurrency, formatDate } from '@/utils/format';
@@ -24,6 +25,7 @@ async function OrdersPage({
   const pageValue = Array.isArray(page) ? page[0] : page;
   const requestedPage = Number.parseInt(pageValue ?? '1', 10);
   const data = await fetchUserOrdersPage(requestedPage);
+  console.log('OrdersPage data:', data);
   const { orders, totalItems, currentPage, totalPages } = data;
   if (requestedPage !== currentPage) {
     redirect(currentPage === 1 ? '/orders' : `/orders?page=${currentPage}`);
@@ -70,14 +72,14 @@ async function OrdersPage({
               No orders yet. Your purchases will appear here.
             </p>
           ) : (
-            orders.map(({ id, products, orderTotal, tax, shipping, createdAt }) => (
+            orders.map(({ id, products, orderItems, orderTotal, tax, shipping, createdAt }) => (
               <article key={id} className='min-w-0 space-y-4 p-4 sm:p-5'>
-                <div className='flex items-center justify-between gap-4'>
-                  <div>
+                <div className='flex items-start justify-between gap-4'>
+                  <div className='min-w-0 flex-1'>
                     <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>Products</p>
-                    <span className='mt-1 inline-flex min-w-10 items-center justify-center rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold tabular-nums text-primary'>
-                      {products}
-                    </span>
+                    <div className='mt-2'>
+                      <OrderProducts items={orderItems} legacyCount={products} />
+                    </div>
                   </div>
                   <div className='min-w-0 text-right'>
                     <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>Order total</p>
@@ -105,10 +107,10 @@ async function OrdersPage({
           )}
         </div>
 
-        <div className='hidden max-w-full md:block'>
-        <Table className='min-w-[640px]'>
+        <div className='hidden max-w-full overflow-x-auto md:block'>
+        <Table className='min-w-[800px]'>
           <TableCaption className='sr-only'>
-            Your past orders, including product count, totals, tax, shipping, and date.
+            Your past orders, including products and quantities, totals, tax, shipping, and date.
           </TableCaption>
           <TableHeader>
             <TableRow className='border-b bg-muted/50 hover:bg-muted/50'>
@@ -141,18 +143,23 @@ async function OrdersPage({
               </TableRow>
             ) : (
               orders.map((order) => {
-                const { id, products, orderTotal, tax, shipping, createdAt } =
-                  order;
+                const {
+                  id,
+                  products,
+                  orderItems,
+                  orderTotal,
+                  tax,
+                  shipping,
+                  createdAt,
+                } = order;
 
                 return (
                   <TableRow
                     key={id}
                     className='transition-colors even:bg-muted/20 hover:bg-primary/5 dark:even:bg-muted/10 dark:hover:bg-primary/10'
                   >
-                    <TableCell className='px-5 py-4'>
-                      <span className='inline-flex min-w-10 items-center justify-center rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold tabular-nums text-primary'>
-                        {products}
-                      </span>
+                    <TableCell className='min-w-[280px] max-w-[420px] px-5 py-4 align-top'>
+                      <OrderProducts items={orderItems} legacyCount={products} />
                     </TableCell>
                     <TableCell className='text-right font-semibold tabular-nums'>
                       {formatCurrency(orderTotal)}

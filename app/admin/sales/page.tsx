@@ -8,6 +8,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Card } from '@/components/ui/card';
+import OrderProducts from '@/components/orders/OrderProducts';
 import PaginationControls from '@/components/admin/PaginationControls';
 import { fetchAdminOrdersPage } from '@/utils/actions';
 import { ADMIN_PAGE_SIZE } from '@/utils/admin-pagination';
@@ -69,16 +70,18 @@ async function SalesPage({
               No sales yet. Completed orders will appear here.
             </p>
           ) : (
-            orders.map(({ id, products, orderTotal, tax, shipping, createdAt, email }) => (
+            orders.map(({ id, products, orderItems, orderTotal, tax, shipping, createdAt, email }) => (
               <article key={id} className='min-w-0 space-y-4 p-4 sm:p-5'>
                 <div className='min-w-0'>
                   <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>Customer</p>
                   <p className='break-all text-sm font-medium'>{email}</p>
                 </div>
                 <div className='grid min-w-0 grid-cols-2 gap-x-4 gap-y-3 text-sm'>
-                  <div className='min-w-0'>
+                  <div className='col-span-2 min-w-0'>
                     <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>Products</p>
-                    <p className='font-semibold tabular-nums'>{products}</p>
+                    <div className='mt-2'>
+                      <OrderProducts items={orderItems} legacyCount={products} />
+                    </div>
                   </div>
                   <div className='min-w-0 text-right'>
                     <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>Order total</p>
@@ -104,10 +107,10 @@ async function SalesPage({
           )}
         </div>
 
-        <div className='hidden max-w-full md:block'>
-        <Table className='min-w-[820px]'>
+        <div className='hidden max-w-full overflow-x-auto md:block'>
+        <Table className='min-w-[980px]'>
           <TableCaption className='sr-only'>
-            Customer orders with product count, order total, tax, shipping, and date.
+            Customer orders with products and quantities, order total, tax, shipping, and date.
           </TableCaption>
           <TableHeader>
             <TableRow className='border-b bg-muted/50 hover:bg-muted/50'>
@@ -146,6 +149,7 @@ async function SalesPage({
                 const {
                   id,
                   products,
+                  orderItems,
                   orderTotal,
                   tax,
                   shipping,
@@ -163,10 +167,8 @@ async function SalesPage({
                         {email}
                       </span>
                     </TableCell>
-                    <TableCell className='text-center'>
-                      <span className='inline-flex min-w-10 items-center justify-center rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold tabular-nums text-primary'>
-                        {products}
-                      </span>
+                    <TableCell className='min-w-[300px] max-w-[440px] py-4 align-top'>
+                      <OrderProducts items={orderItems} legacyCount={products} />
                     </TableCell>
                     <TableCell className='text-right font-semibold tabular-nums'>
                       {formatCurrency(orderTotal)}

@@ -711,6 +711,7 @@ export const addToCartAction = async (prevState: any, formData: FormData) => {
     const cart = await fetchOrCreateCart({ userId: user.id });
     await updateOrCreateCartItem({ productId, cartId: cart.id, amount });
     await updateCart(cart);
+    // revalidatePath('/products/[productId]');
     revalidatePath('/cart');
     revalidatePath('/', 'layout');
   } catch (error) {
@@ -802,6 +803,13 @@ export const createOrderAction = async (prevState: any, formData: FormData) => {
         tax: cart.tax,
         shipping: cart.shipping,
         email: user.emailAddresses[0].emailAddress,
+        orderItems: {
+          create: cart.cartItems.map((item) => ({
+            productName: item.product.name,
+            quantity: item.amount,
+            unitPrice: item.product.price,
+          })),
+        },
       },
     });
     orderId = order.id;
@@ -818,6 +826,11 @@ export const fetchUserOrders = async () => {
     where: {
       clerkId: user.id,
       isPaid: true,
+    },
+    include: {
+      orderItems: {
+        select: { id: true, productName: true, quantity: true },
+      },
     },
     orderBy: {
       createdAt: 'desc',
@@ -837,6 +850,11 @@ export const fetchUserOrdersPage = async (page: number) => {
   const currentPage = Math.min(normalizePaginationPage(page), totalPages);
   const orders = await db.order.findMany({
     where,
+    include: {
+      orderItems: {
+        select: { id: true, productName: true, quantity: true },
+      },
+    },
     orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
     skip: (currentPage - 1) * ORDERS_PAGE_SIZE,
     take: ORDERS_PAGE_SIZE,
@@ -851,6 +869,11 @@ export const fetchAdminOrders = async () => {
   const orders = await db.order.findMany({
     where: {
       isPaid: true,
+    },
+    include: {
+      orderItems: {
+        select: { id: true, productName: true, quantity: true },
+      },
     },
     orderBy: {
       createdAt: 'desc',
@@ -867,6 +890,11 @@ export const fetchAdminOrdersPage = async (page: number) => {
   const currentPage = Math.min(normalizeAdminPage(page), totalPages);
   const orders = await db.order.findMany({
     where,
+    include: {
+      orderItems: {
+        select: { id: true, productName: true, quantity: true },
+      },
+    },
     orderBy: {
       createdAt: 'desc',
     },
