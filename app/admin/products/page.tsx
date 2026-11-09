@@ -34,13 +34,13 @@ async function ItemsPage({
   }
 
   return (
-    <section className='space-y-8'>
+    <section className='min-w-0 space-y-6 sm:space-y-8'>
       <header className='flex flex-col gap-6 rounded-2xl border bg-gradient-to-br from-primary/10 via-card to-card p-6 shadow-sm sm:flex-row sm:items-end sm:justify-between sm:p-8'>
         <div className='space-y-2'>
           <p className='text-sm font-semibold uppercase tracking-[0.18em] text-primary'>
             Catalog management
           </p>
-          <h1 className='text-3xl font-semibold tracking-tight sm:text-4xl'>
+          <h1 className='break-words text-2xl font-semibold tracking-tight sm:text-3xl lg:text-4xl'>
             My Products
           </h1>
           <p className='max-w-xl text-sm text-muted-foreground sm:text-base'>
@@ -54,7 +54,7 @@ async function ItemsPage({
             </span>{' '}
             {totalItems === 1 ? 'product' : 'products'}
           </span>
-          <Button asChild className='gap-2 shadow-sm'>
+          <Button asChild className='w-full gap-2 shadow-sm sm:w-auto'>
             <Link href='/admin/products/create'>
               <LuPlus aria-hidden='true' />
               Add product
@@ -63,7 +63,7 @@ async function ItemsPage({
         </div>
       </header>
 
-      <Card className='overflow-hidden rounded-2xl shadow-sm'>
+      <Card className='min-w-0 overflow-hidden rounded-2xl shadow-sm'>
         <div className='flex flex-col gap-1 border-b bg-muted/30 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6'>
           <div>
             <h2 className='font-semibold tracking-tight'>Product catalog</h2>
@@ -74,6 +74,42 @@ async function ItemsPage({
           </span>
         </div>
 
+        <div className='divide-y md:hidden'>
+          {items.length === 0 ? (
+            <p className='px-5 py-10 text-center text-sm text-muted-foreground'>
+              No products yet. Add your first product to start your catalog.
+            </p>
+          ) : (
+            items.map(({ id: productId, name, company, price }) => (
+              <article key={productId} className='space-y-3 p-4 sm:p-5'>
+                <Link
+                  href={`/products/${productId}`}
+                  className='block break-words font-semibold capitalize text-foreground underline-offset-4 hover:text-primary hover:underline'
+                >
+                  {name}
+                </Link>
+                <div className='flex min-w-0 items-start justify-between gap-4 text-sm'>
+                  <div className='min-w-0'>
+                    <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>Company</p>
+                    <p className='break-words capitalize'>{company}</p>
+                  </div>
+                  <div className='shrink-0 text-right'>
+                    <p className='text-xs font-medium uppercase tracking-wide text-muted-foreground'>Price</p>
+                    <p className='font-semibold tabular-nums'>{formatCurrency(price)}</p>
+                  </div>
+                </div>
+                <div className='flex justify-end gap-1 border-t pt-3'>
+                  <Link href={`/admin/products/${productId}/edit`} aria-label={`Edit ${name}`}>
+                    <IconButton actionType='edit' />
+                  </Link>
+                  <DeleteProduct productId={productId} />
+                </div>
+              </article>
+            ))
+          )}
+        </div>
+
+        <div className='hidden max-w-full md:block'>
         <Table className='min-w-[640px]'>
           <TableCaption className='sr-only'>
             Your product listings with company, price, and management actions.
@@ -140,6 +176,7 @@ async function ItemsPage({
             )}
           </TableBody>
         </Table>
+        </div>
         <PaginationControls
           currentPage={currentPage}
           totalPages={totalPages}

@@ -8,7 +8,7 @@ function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside>
+    <aside className='grid grid-cols-2 gap-2 lg:flex lg:flex-col'>
       {adminLinks.map((link) => {
         const isActivePage = pathname === link.href;
         const variant = isActivePage ? 'default' : 'ghost';
@@ -16,7 +16,7 @@ function Sidebar() {
           <Button
             key={link.href}
             asChild
-            className='w-full mb-2 capitalize font-normal justify-start'
+            className='mb-0 w-full min-w-0 justify-start whitespace-normal px-3 text-left font-normal capitalize'
             variant={variant}
           >
             <Link href={link.href}>{link.label}</Link>

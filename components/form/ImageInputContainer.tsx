@@ -25,7 +25,7 @@ function ImageInputContainer(props: ImageInputContainerProps) {
         src={image}
         width={200}
         height={200}
-        className='h-[200px] w-[200px] rounded-xl border bg-muted object-cover shadow-sm'
+        className='aspect-square h-auto w-full max-w-[200px] rounded-xl border bg-muted object-cover shadow-sm'
         alt={name}
       />
 

@@ -5,15 +5,15 @@ import { Suspense } from 'react';
 function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <h2 className='text-2xl pl-4'>Dashboard</h2>
+      <h2 className='pl-1 text-xl sm:pl-4 sm:text-2xl'>Dashboard</h2>
       <Separator className='mt-2' />
-      <section className='grid lg:grid-cols-12 gap-12 mt-12'>
-        <div className='lg:col-span-2'>
+      <section className='mt-6 grid min-w-0 grid-cols-1 gap-6 sm:mt-8 lg:mt-12 lg:grid-cols-12 lg:gap-8'>
+        <div className='min-w-0 lg:col-span-2'>
           <Suspense fallback={<p>Loading...</p>}>
             <Sidebar />
           </Suspense>
         </div>
-        <div className='lg:col-span-10 px-4'>{children}</div>
+        <div className='min-w-0 lg:col-span-10'>{children}</div>
       </section>
     </>
   );
