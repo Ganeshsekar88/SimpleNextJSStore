@@ -78,39 +78,48 @@ async function Footer() {
           <FooterLinks heading='Explore' items={exploreLinks} />
           <FooterLinks heading='Your store' items={accountLinks} />
 
-          <section className='min-w-0' aria-label='Account'>
-            <h2 className='text-sm font-semibold uppercase tracking-[0.16em] text-foreground'>
-              Account
-            </h2>
-            <ul className='mt-5 space-y-3'>
-              <li>
-                <Link
-                  href='/login'
-                  className='text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
-                >
-                  Sign in
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href='/register'
-                  className='text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
-                >
-                  Create account
-                </Link>
-              </li>
-              {isAdmin && dashboardLink && (
-                <li>
-                  <Link
-                    href={dashboardLink.href}
-                    className='text-sm capitalize text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
-                  >
-                    {dashboardLink.label}
-                  </Link>
-                </li>
-              )}
-            </ul>
-          </section>
+          {(!userId || isAdmin) && (
+            <section className='min-w-0' aria-label='Account'>
+              <h2 className='text-sm font-semibold uppercase tracking-[0.16em] text-foreground'>
+                Account
+              </h2>
+
+              <ul className='mt-5 space-y-3'>
+                {!userId ? (
+                  <>
+                    <li>
+                      <Link
+                        href='/login'
+                        className='text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
+                      >
+                        Sign in
+                      </Link>
+                    </li>
+
+                    <li>
+                      <Link
+                        href='/register'
+                        className='text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
+                      >
+                        Create account
+                      </Link>
+                    </li>
+                  </>
+                ) : (
+                  dashboardLink && (
+                    <li>
+                      <Link
+                        href={dashboardLink.href}
+                        className='text-sm capitalize text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
+                      >
+                        {dashboardLink.label}
+                      </Link>
+                    </li>
+                  )
+                )}
+              </ul>
+            </section>
+          )}
         </div>
 
         <div className='mt-10 flex flex-col gap-3 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between'>
