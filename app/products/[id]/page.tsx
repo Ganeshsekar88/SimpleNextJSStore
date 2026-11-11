@@ -1,67 +1,27 @@
-import BreadCrumbs from '@/components/single-product/BreadCrumbs';
-import { fetchSingleProduct } from '@/utils/actions';
-import Image from 'next/image';
-import { formatCurrency } from '@/utils/format';
-import FavoriteToggleButton from '@/components/products/FavoriteToggleButton';
-import AddToCart from '@/components/single-product/AddToCart';
-import ProductRating from '@/components/single-product/ProductRating';
-import ShareButton from '@/components/single-product/ShareButton';
-import SubmitReview from '@/components/reviews/SubmitReview';
-import ProductReviews from '@/components/reviews/ProductReview';
-import { findExistingReview } from '@/utils/actions';
-import { auth } from '@clerk/nextjs/server';
+import { Suspense } from 'react';
 
-async function SingleProductPage({ params }: { params: Promise<{ id: string }> }) {
+import SingleProductContent from './SingleProductContent';
 
-  const { userId } = await auth();
-  const product = await fetchSingleProduct((await params).id);
-
-  const reviewDoesNotExist =
-    userId && !(await findExistingReview(userId, product.id));
-
-
-
-  const { name, image, company, description, price } = product;
-  const dollarsAmount = formatCurrency(price);
+function ProductSkeleton() {
   return (
-    <section>
-      <BreadCrumbs name={product.name} />
-      <div className='mt-6 grid gap-y-8 lg:grid-cols-2 lg:gap-x-16'>
-        {/* IMAGE FIRST COL */}
-        <div className='relative h-full'>
-          <Image
-            src={image}
-            alt={name}
-            fill
-            sizes='(max-width:768px) 100vw,(max-width:1200px) 50vw,33vw'
-            priority
-            className='w-full rounded-md object-cover'
-          />
-        </div>
-        {/* PRODUCT INFO SECOND COL */}
-        <div>
-          <div className='flex gap-x-8 items-center'>
-            <h1 className='capitalize text-3xl font-bold'>{name}</h1>
-            <FavoriteToggleButton
-              productId={product.id}
-              signInRedirectUrl={`/products/${product.id}`}
-            />
-            <ShareButton productId={(await params).id} name={name} />
-          </div>
-          <ProductRating productId={(await params).id} />
-          <h4 className='text-xl mt-2'>{company}</h4>
-          <p className='mt-3 text-md bg-muted inline-block p-2 rounded-md'>
-            {dollarsAmount}
-          </p>
-          <p className='mt-6 leading-8 text-muted-foreground'>{description}</p>
-          <AddToCart productId={(await params).id} />
-        </div>
+    <div className="p-8 animate-pulse">
+      <div className="h-8 w-48 bg-muted rounded mb-6" />
+      <div className="grid lg:grid-cols-2 gap-8">
+        <div className="h-96 bg-muted rounded" />
+        <div className="h-96 bg-muted rounded" />
       </div>
-      <>
-        <ProductReviews productId={(await params).id} />
-        {reviewDoesNotExist && <SubmitReview productId={(await params).id} />}
-      </>
-    </section>
+    </div>
   );
 }
-export default SingleProductPage;
+
+export default function SingleProductPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  return (
+    <Suspense fallback={<ProductSkeleton />}>
+      <SingleProductContent params={params} />
+    </Suspense>
+  );
+}

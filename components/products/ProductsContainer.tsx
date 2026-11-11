@@ -3,7 +3,11 @@ import ProductsList from './ProductsList';
 import { LuLayoutGrid, LuList } from 'react-icons/lu';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { fetchAllProducts, fetchProductsPage } from '@/utils/actions';
+import {
+  fetchAllProducts,
+  fetchProductFavoriteStates,
+  fetchProductsPage,
+} from '@/utils/actions';
 import { PRODUCTS_PAGE_SIZE } from '@/utils/pagination';
 import Link from 'next/link';
 import PaginationControls from '@/components/admin/PaginationControls';
@@ -36,6 +40,9 @@ async function ProductsContainer({
     : await fetchProductsPage({ search, page });
   const products = pageData.items;
   const totalProducts = page === undefined ? products.length : pageData.totalItems;
+  const favoriteStates = page !== undefined && products.length > 0
+    ? await fetchProductFavoriteStates(products.map((product) => product.id))
+    : undefined;
   if (page !== undefined && page !== pageData.currentPage) {
     redirect(productsHref(layout, search, pageData.currentPage));
   }
@@ -86,9 +93,9 @@ async function ProductsContainer({
             Sorry, no products matched your search...
           </h5>
         ) : layout === 'grid' ? (
-          <ProductsGrid products={products} />
+          <ProductsGrid products={products} favoriteStates={favoriteStates} />
         ) : (
-          <ProductsList products={products} />
+          <ProductsList products={products} favoriteStates={favoriteStates} />
         )}
       </div>
       <PaginationControls

@@ -2,14 +2,18 @@ import FeaturedProducts from '@/components/home/FeaturedProducts';
 import Hero from '@/components/home/Hero';
 import LoadingContainer from '@/components/global/LoadingContainer';
 import { Suspense } from 'react';
-function HomPage() {
+
+function HomPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string | string[] }>;
+}) {
   return (
     <>
       <Hero />
       <Suspense fallback={<LoadingContainer />}>
-        <FeaturedProducts />
+        <FeaturedProducts searchParams={searchParams} />
       </Suspense>
-      {/* <h2>Home</h2> */}
     </>
   );
 }

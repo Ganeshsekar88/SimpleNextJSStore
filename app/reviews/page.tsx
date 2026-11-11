@@ -3,17 +3,24 @@ import ReviewCard from '@/components/reviews/ReviewCard';
 import SectionTitle from '@/components/global/SectionTitle';
 import FormContainer from '@/components/form/FormContainer';
 import { IconButton } from '@/components/form/IconButton';
+import PaginationControls from '@/components/admin/PaginationControls';
+import { REVIEWS_PAGE_SIZE } from '@/utils/pagination';
+import { redirect } from 'next/navigation';
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      [elementName: string]: any;
-    }
+async function ReviewsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string | string[] }>;
+}) {
+  const { page } = await searchParams;
+  const pageValue = Array.isArray(page) ? page[0] : page;
+  const requestedPage = Number.parseInt(pageValue ?? '1', 10);
+  const data = await fetchProductReviewsByUser(requestedPage);
+  const { reviews, totalItems, currentPage, totalPages } = data;
+  if (requestedPage !== currentPage) {
+    redirect(currentPage === 1 ? '/reviews' : `/reviews?page=${currentPage}`);
   }
-}
 
-async function ReviewsPage() {
-  const reviews = await fetchProductReviewsByUser();
   if (reviews.length === 0)
     return <SectionTitle text='you have no reviews yet' />;
 
@@ -37,6 +44,14 @@ async function ReviewsPage() {
           );
         })}
       </section>
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        pageSize={REVIEWS_PAGE_SIZE}
+        href='/reviews'
+        itemLabel='reviews'
+      />
     </>
   );
 }

@@ -5,16 +5,27 @@ import FavoriteToggleForm from './FavoriteToggleForm';
 async function FavoriteToggleButton({
   productId,
   signInRedirectUrl,
+  userId,
+  favoriteId,
 }: {
   productId: string;
   signInRedirectUrl?: string;
+  userId?: string | null;
+  favoriteId?: string | null;
 }) {
-  // Product listings are public. Only the favorite action requires a session,
-  // so inspect auth state without redirecting signed-out visitors.
-  const { userId } = await auth();
-  if (!userId) return <CardSignInButton redirectUrl={signInRedirectUrl} />;
-  const favoriteId = await fetchFavoriteId({ productId });
+  const resolvedUserId = userId === undefined ? (await auth()).userId : userId;
+  if (!resolvedUserId) {
+    return <CardSignInButton redirectUrl={signInRedirectUrl} />;
+  }
+  const resolvedFavoriteId = favoriteId === undefined
+    ? await fetchFavoriteId({ productId })
+    : favoriteId;
 
-  return <FavoriteToggleForm favoriteId={favoriteId} productId={productId} />;
+  return (
+    <FavoriteToggleForm
+      favoriteId={resolvedFavoriteId}
+      productId={productId}
+    />
+  );
 }
 export default FavoriteToggleButton;

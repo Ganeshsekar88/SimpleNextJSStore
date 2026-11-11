@@ -3,7 +3,7 @@ import { fetchProductReviews } from '@/utils/actions';
 import ReviewCard from './ReviewCard';
 import SectionTitle from '../global/SectionTitle';
 async function ProductReviews({ productId }: { productId: string }) {
-  const reviews = await fetchProductReviews(productId);
+  const { reviews, totalItems, currentPage, totalPages } = await fetchProductReviews(productId, 1);
 
   return (
     <div className='mt-16'>
@@ -17,6 +17,9 @@ async function ProductReviews({ productId }: { productId: string }) {
             rating,
             image: authorImageUrl,
             name: authorName,
+            totalReviews: totalItems,
+            currentPage,
+            totalPages
           };
           return <ReviewCard key={review.id} reviewInfo={reviewInfo} />;
         })}

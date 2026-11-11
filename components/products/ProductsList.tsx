@@ -4,7 +4,16 @@ import { Card, CardContent } from '@/components/ui/card';
 import type { Product } from '@/generated/prisma/client';
 import Image from 'next/image';
 import FavoriteToggleButton from './FavoriteToggleButton';
-function ProductsList({ products }: { products: Product[] }) {
+function ProductsList({
+  products,
+  favoriteStates,
+}: {
+  products: Product[];
+  favoriteStates?: {
+    userId: string | null;
+    favoriteIds: Record<string, string>;
+  };
+}) {
   return (
     <div className='mt-12 grid gap-y-8'>
       {products.map((product, index) => {
@@ -38,7 +47,15 @@ function ProductsList({ products }: { products: Product[] }) {
               </Card>
             </Link>
             <div className='absolute bottom-8 right-8 z-5'>
-              <FavoriteToggleButton productId={productId} />
+              <FavoriteToggleButton
+                productId={productId}
+                {...(favoriteStates
+                  ? {
+                      userId: favoriteStates.userId,
+                      favoriteId: favoriteStates.favoriteIds[productId] ?? null,
+                    }
+                  : {})}
+              />
             </div>
           </article>
         );

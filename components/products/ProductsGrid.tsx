@@ -5,7 +5,16 @@ import Link from 'next/link';
 import Image from 'next/image';
 import FavoriteToggleButton from './FavoriteToggleButton';
 
-function ProductsGrid({ products }: { products: Product[] }) {
+function ProductsGrid({
+  products,
+  favoriteStates,
+}: {
+  products: Product[];
+  favoriteStates?: {
+    userId: string | null;
+    favoriteIds: Record<string, string>;
+  };
+}) {
   return (
     <div className='pt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
       {products.map((product, index) => {
@@ -37,7 +46,15 @@ function ProductsGrid({ products }: { products: Product[] }) {
               </Card>
             </Link>
             <div className='absolute top-7 right-7 z-5'>
-              <FavoriteToggleButton productId={productId} />
+              <FavoriteToggleButton
+                productId={productId}
+                {...(favoriteStates
+                  ? {
+                      userId: favoriteStates.userId,
+                      favoriteId: favoriteStates.favoriteIds[productId] ?? null,
+                    }
+                  : {})}
+              />
             </div>
           </article>
         );

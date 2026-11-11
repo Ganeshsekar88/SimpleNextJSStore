@@ -1,5 +1,10 @@
 export const PRODUCTS_PAGE_SIZE = 6;
 export const ORDERS_PAGE_SIZE = 6;
+export const FAVORITES_PAGE_SIZE = 6;
+export const FEATURED_PAGE_SIZE = 6;
+export const REVIEWS_PAGE_SIZE = 6;
+
+
 
 export const normalizePaginationPage = (page: number) => {
   const numericPage = Number(page);

@@ -6,6 +6,10 @@ import {
   normalizePaginationPage,
   ORDERS_PAGE_SIZE,
   PRODUCTS_PAGE_SIZE,
+  REVIEWS_PAGE_SIZE,
+  FAVORITES_PAGE_SIZE,
+  FEATURED_PAGE_SIZE,
+
 } from '@/utils/pagination';
 
 import { auth, currentUser } from '@clerk/nextjs/server';
@@ -32,12 +36,18 @@ import { unstable_cache, revalidateTag } from 'next/cache';
 
 
 export const fetchFeaturedProducts = unstable_cache(
-  async () => {
-    return db.product.findMany({
-      where: {
-        featured: true,
-      },
+  async (page: number = 1) => {
+    const where = { featured: true };
+    const totalItems = await db.product.count({ where });
+    const totalPages = Math.max(1, Math.ceil(totalItems / FEATURED_PAGE_SIZE));
+    const currentPage = Math.min(normalizePaginationPage(page), totalPages);
+    const items = await db.product.findMany({
+      where,
+      orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
+      skip: (currentPage - 1) * FEATURED_PAGE_SIZE,
+      take: FEATURED_PAGE_SIZE,
     });
+    return { items, totalItems, currentPage, totalPages };
   },
   ['featured-products'],
   {
@@ -72,6 +82,8 @@ export const fetchProductsPage = async ({
       { company: { contains: search, mode: 'insensitive' as const } },
     ],
   };
+  await connection();
+
   const totalItems = await db.product.count({ where });
   const totalPages = Math.max(1, Math.ceil(totalItems / PRODUCTS_PAGE_SIZE));
   const currentPage = Math.min(normalizePaginationPage(page), totalPages);
@@ -164,7 +176,7 @@ export const createProductAction = async (
       },
     });
 
-    revalidateTag('featured-products','max');
+    revalidateTag('featured-products', 'max');
     return { message: 'product created' };
 
 
@@ -327,6 +339,70 @@ export const fetchFavoriteId = async ({ productId }: { productId: string }) => {
   return favorite?.id || null;
 };
 
+// export const fetchProductFavoriteStates = async (productIds: string[]) => {
+//   const { userId } = await auth();
+//   if (!userId || productIds.length === 0) {
+//     return { userId: userId ?? null, favoriteIds: {} as Record<string, string> };
+//   }
+
+//   const favorites = await db.favorite.findMany({
+//     where: {
+//       clerkId: userId,
+//       productId: { in: productIds },
+//     },
+//     select: {
+//       id: true,
+//       productId: true,
+//     },
+//   });
+
+//   return {
+//     userId,
+//     favoriteIds: Object.fromEntries(
+//       favorites.map(({ id, productId }) => [productId, id] as const)
+//     ),
+//   };
+// };
+
+
+export const fetchProductFavoriteStates = async (
+  productIds: string[]
+) => {
+
+  await connection();
+
+  const { userId } = await auth();
+
+  if (!userId || productIds.length === 0) {
+    return {
+      userId: userId ?? null,
+      favoriteIds: {} as Record<string, string>,
+    };
+  }
+
+  const favorites = await db.favorite.findMany({
+    where: {
+      clerkId: userId,
+      productId: {
+        in: productIds,
+      },
+    },
+    select: {
+      id: true,
+      productId: true,
+    },
+  });
+
+  return {
+    userId,
+    favoriteIds: Object.fromEntries(
+      favorites.map(({ id, productId }) => [
+        productId,
+        id,
+      ])
+    ),
+  };
+};
 export const toggleFavoriteAction = async (prevState: {
   productId: string;
   favoriteId: string | null;
@@ -357,17 +433,24 @@ export const toggleFavoriteAction = async (prevState: {
 };
 
 
-export const fetchUserFavorites = async () => {
+export const fetchUserFavorites = async (page: number = 1) => {
   const user = await getAuthUser();
-  const favorites = await db.favorite.findMany({
-    where: {
-      clerkId: user.id,
-    },
+  const where = {
+    clerkId: user.id,
+  };
+  const totalItems = await db.favorite.count({ where });
+  const totalPages = Math.max(1, Math.ceil(totalItems / FAVORITES_PAGE_SIZE));
+  const currentPage = Math.min(normalizePaginationPage(page), totalPages);
+  const items = await db.favorite.findMany({
+    where,
     include: {
       product: true,
     },
+    orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
+    skip: (currentPage - 1) * FAVORITES_PAGE_SIZE,
+    take: FAVORITES_PAGE_SIZE,
   });
-  return favorites;
+  return { items, totalItems, currentPage, totalPages };
 }
 
 export const createReviewAction = async (
@@ -393,24 +476,33 @@ export const createReviewAction = async (
   }
 };
 
-export const fetchProductReviews = async (productId: string) => {
+export const fetchProductReviews = async (productId: string, page: number) => {
+  const where = {
+    productId,
+  };
+  const totalItems = await db.review.count({ where });
+  const totalPages = Math.max(1, Math.ceil(totalItems / REVIEWS_PAGE_SIZE));
+  const currentPage = Math.min(normalizePaginationPage(page), totalPages);
   const reviews = await db.review.findMany({
-    where: {
-      productId,
-    },
+    where,
     orderBy: {
       createdAt: 'desc',
     },
+    skip: (currentPage - 1) * REVIEWS_PAGE_SIZE,
+    take: REVIEWS_PAGE_SIZE,
   });
-  return reviews;
+  return { reviews, totalItems, currentPage, totalPages };
 };
 
-export const fetchProductReviewsByUser = async () => {
+export const fetchProductReviewsByUser = async (page: number = 1) => {
   const user = await getAuthUser();
+  const where = { clerkId: user.id };
+  const totalItems = await db.review.count({ where });
+  const totalPages = Math.max(1, Math.ceil(totalItems / REVIEWS_PAGE_SIZE));
+  const currentPage = Math.min(normalizePaginationPage(page), totalPages);
   const reviews = await db.review.findMany({
-    where: {
-      clerkId: user.id,
-    },
+    where,
+    orderBy: [{ createdAt: 'desc' }, { id: 'asc' }],
     select: {
       id: true,
       rating: true,
@@ -422,8 +514,10 @@ export const fetchProductReviewsByUser = async () => {
         },
       },
     },
+    skip: (currentPage - 1) * REVIEWS_PAGE_SIZE,
+    take: REVIEWS_PAGE_SIZE,
   });
-  return reviews;
+  return { reviews, totalItems, currentPage, totalPages };
 };
 
 export const deleteReviewAction = async (prevState: { reviewId: string }) => {
