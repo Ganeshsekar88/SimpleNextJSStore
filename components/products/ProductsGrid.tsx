@@ -16,13 +16,13 @@ function ProductsGrid({
   };
 }) {
   return (
-    <div className='pt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
+    <div className='grid min-w-0 grid-cols-1 gap-4 pt-8 sm:grid-cols-2 sm:pt-10 lg:grid-cols-3'>
       {products.map((product, index) => {
         const { name, price, image} = product;
         const productId = product.id;
         const dollarsAmount = formatCurrency(price);
         return (
-          <article key={productId} className='group relative'>
+          <article key={productId} className='group relative min-w-0'>
             <Link href={`/products/${productId}`}>
               <Card className='transform group-hover:shadow-xl transition-shadow duration-500'>
                 <CardContent className='p-4'>
@@ -37,7 +37,7 @@ function ProductsGrid({
                     />
                   </div>
                   <div className='mt-4 text-center'>
-                    <h2 className='text-lg  capitalize'>{name}</h2>
+                    <h2 className='break-words text-lg capitalize'>{name}</h2>
                     <p className='text-muted-foreground  mt-2'>
                       {dollarsAmount}
                     </p>

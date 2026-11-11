@@ -15,9 +15,8 @@ function FooterLinks({
   heading: string;
   items: { href: string; label: string }[];
 }) {
-  
   return (
-    <section aria-label={heading}>
+    <section className='min-w-0' aria-label={heading}>
       <h2 className='text-sm font-semibold uppercase tracking-[0.16em] text-foreground'>
         {heading}
       </h2>
@@ -49,14 +48,14 @@ async function Footer() {
   return (
     <footer className='border-t border-border bg-background text-foreground'>
       <Container className='py-12 sm:py-14'>
-        <div className='grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:gap-12'>
-          <div className='max-w-sm'>
+        <div className='grid min-w-0 gap-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] lg:gap-12'>
+          <div className='min-w-0 max-w-sm'>
             <Link
               href='/'
               className='inline-flex items-center gap-3 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
               aria-label='Next Storefront home'
             >
-              <span className='flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground'>
+              <span className='flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground'>
                 <LuShoppingBag className='size-5' aria-hidden='true' />
               </span>
               <span className='text-base font-semibold tracking-tight'>
@@ -79,7 +78,7 @@ async function Footer() {
           <FooterLinks heading='Explore' items={exploreLinks} />
           <FooterLinks heading='Your store' items={accountLinks} />
 
-          <section aria-label='Account'>
+          <section className='min-w-0' aria-label='Account'>
             <h2 className='text-sm font-semibold uppercase tracking-[0.16em] text-foreground'>
               Account
             </h2>

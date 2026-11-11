@@ -1,7 +1,5 @@
-'use client';
+import { FavoritesPageSkeleton } from '@/components/favorites/FavoritesPageSkeleton';
 
-
-function loading() {
-  return <p>Loading...</p>;
+export default function Loading() {
+  return <FavoritesPageSkeleton />;
 }
-export default loading;

@@ -13,7 +13,7 @@ function Comment({ comment }: { comment: string }) {
 
   return (
     <div>
-      <p className='text-sm'>{displayComment}</p>
+      <p className='break-words text-sm'>{displayComment}</p>
       {longComment && (
         <Button
           variant='link'

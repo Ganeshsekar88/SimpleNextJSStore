@@ -6,6 +6,7 @@ import { IconButton } from '@/components/form/IconButton';
 import PaginationControls from '@/components/admin/PaginationControls';
 import { REVIEWS_PAGE_SIZE } from '@/utils/pagination';
 import { redirect } from 'next/navigation';
+import EmptyPageState from '@/components/global/EmptyPageState';
 
 async function ReviewsPage({
   searchParams,
@@ -21,13 +22,20 @@ async function ReviewsPage({
     redirect(currentPage === 1 ? '/reviews' : `/reviews?page=${currentPage}`);
   }
 
-  if (reviews.length === 0)
-    return <SectionTitle text='you have no reviews yet' />;
+  if (reviews.length === 0) {
+    return (
+      <EmptyPageState
+        title='Your Reviews'
+        description='Reviews you write will be collected here.'
+        message='You have not written any reviews yet.'
+      />
+    );
+  }
 
   return (
     <>
       <SectionTitle text='Your Reviews' />
-      <section className='grid md:grid-cols-2 gap-8 mt-4'>
+      <section className='mt-4 grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3'>
         {reviews.map((review) => {
           const { comment, rating } = review;
           const { name, image } = review.product;
@@ -44,14 +52,16 @@ async function ReviewsPage({
           );
         })}
       </section>
-      <PaginationControls
-        currentPage={currentPage}
-        totalPages={totalPages}
-        totalItems={totalItems}
-        pageSize={REVIEWS_PAGE_SIZE}
-        href='/reviews'
-        itemLabel='reviews'
-      />
+      <div className='mt-8 min-w-0'>
+        <PaginationControls
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          pageSize={REVIEWS_PAGE_SIZE}
+          href='/reviews'
+          itemLabel='reviews'
+        />
+      </div>
     </>
   );
 }

@@ -24,12 +24,13 @@ export default function RootLayout({
       <body className={`${inter.className} flex min-h-screen flex-col`}>
         <Providers>
           <Navbar />
-          <main className='flex-1'>
-            <Container className='py-20'>{children}</Container>
+          <main className='min-w-0 flex-1'>
+            <Container className='py-12 sm:py-20'>{children}</Container>
           </main>
           <Suspense fallback={null}>
             <Footer />
-          </Suspense>        </Providers>
+          </Suspense>
+        </Providers>
       </body>
     </html>
   );
