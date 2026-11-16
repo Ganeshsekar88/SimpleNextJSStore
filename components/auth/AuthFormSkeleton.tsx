@@ -53,7 +53,7 @@ export default function AuthFormSkeleton({ variant }: AuthFormSkeletonProps) {
 
   return (
     <section
-      className='flex min-h-[65vh] min-w-0 items-center justify-center px-3 py-8 sm:px-4 sm:py-10'
+      className='flex min-h-[50vh] min-w-0 items-center justify-center px-3 py-8 sm:px-4 sm:py-10'
       aria-busy='true'
       aria-label={`Loading ${isRegister ? 'account registration' : 'sign in'}`}
     >
