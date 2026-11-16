@@ -5,11 +5,11 @@ import EmptyPageState from '@/components/global/EmptyPageState';
 
 import { fetchOrCreateCart, updateCart, fetchCartItems } from '@/utils/actions';
 import { auth } from '@clerk/nextjs/server';
-import { redirect } from 'next/navigation';
+import { unauthorized } from 'next/navigation';
 
 async function CartPage() {
-  const { userId } = await auth.protect();
-  if (!userId) redirect('/');
+  const { userId } = await auth();
+  if (!userId) unauthorized();
   const numItemsInCart = await fetchCartItems();
   if (numItemsInCart === 0) {
     return (

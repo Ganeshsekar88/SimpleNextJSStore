@@ -3,6 +3,9 @@ const nextConfig = {
 
   cacheComponents: true,
   partialPrefetching: true,
+  experimental: {
+    authInterrupts: true,
+  },
   
   images: {
     // Serve smaller modern image formats when the browser supports them.
