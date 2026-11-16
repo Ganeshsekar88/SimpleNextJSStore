@@ -9,7 +9,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
       <Separator className='mt-2' />
       <section className='mt-6 grid min-w-0 grid-cols-1 gap-6 sm:mt-8 lg:mt-12 lg:grid-cols-12 lg:gap-8'>
         <div className='min-w-0 lg:col-span-2'>
-          <Suspense fallback={<p>Loading...</p>}>
+          <Suspense fallback={null}>
             <Sidebar />
           </Suspense>
         </div>

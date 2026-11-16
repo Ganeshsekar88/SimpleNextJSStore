@@ -3,7 +3,7 @@ import CheckoutForm from './CheckoutForm';
 
 export default function CheckoutPage() {
   return (
-      <Suspense fallback={<p>Loading...</p>}>
+      <Suspense fallback={null}>
       <CheckoutForm />
     </Suspense>
   );
