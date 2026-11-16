@@ -10,15 +10,15 @@ const Navbar = () => {
   return <nav className='border-b'>
     <Container className='flex flex-col sm:flex-row sm:justify-between sm:items-center flex-wrap py-8 gap-4'>
       <Logo></Logo>
-      <Suspense fallback={null}>
+      <Suspense fallback={<p>Loading...</p>}>
         <NavSearch />
       </Suspense>
       <div className='flex gap-4 items-center'>
-        <Suspense fallback={null}>
+        <Suspense fallback={<p>Loading...</p>}>
           <CartButton />
         </Suspense>
         <DarkMode />
-        <Suspense fallback={null}>
+        <Suspense fallback={<p>Loading...</p>}>
           <LinksDropDown />
         </Suspense>
       </div>

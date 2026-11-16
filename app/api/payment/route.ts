@@ -37,66 +37,24 @@ export const POST = async (req: NextRequest) => {
       statusText: 'Not Found',
     });
   }
-  try {
-    let taxRateId: string | undefined;
-
-    if (cart.tax > 0 && cart.cartTotal > 0) {
-      const percentage = cart.taxRate * 100;
-      const { data: taxRates } = await stripe.taxRates.list({
-        active: true,
-        limit: 100,
-      });
-      const existingTaxRate = taxRates.find(
-        (taxRate) =>
-          taxRate.display_name === 'Tax' &&
-          !taxRate.inclusive &&
-          Math.abs(taxRate.percentage - percentage) < 0.0001
-      );
-      const taxRate =
-        existingTaxRate ??
-        (await stripe.taxRates.create({
-          display_name: 'Tax',
-          inclusive: false,
-          percentage,
-        }));
-
-      taxRateId = taxRate.id;
-    }
-
-    const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] =
-      cart.cartItems.map((cartItem) => ({
-        quantity: cartItem.amount,
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: cartItem.product.name,
-            images: [cartItem.product.image],
-          },
-          unit_amount: cartItem.product.price * 100, // price in cents
+  const line_items = cart.cartItems.map((cartItem) => {
+    return {
+      quantity: cartItem.amount,
+      price_data: {
+        currency: 'usd',
+        product_data: {
+          name: cartItem.product.name,
+          images: [cartItem.product.image],
         },
-        ...(taxRateId ? { tax_rates: [taxRateId] } : {}),
-      }));
-
+        unit_amount: cartItem.product.price * 100, // price in cents
+      },
+    };
+  });
+  try {
     const session = await stripe.checkout.sessions.create({
       ui_mode: 'embedded_page',
       metadata: { orderId, cartId },
       line_items: line_items,
-      ...(cart.shipping > 0
-        ? {
-            shipping_options: [
-              {
-                shipping_rate_data: {
-                  type: 'fixed_amount',
-                  display_name: 'Shipping',
-                  fixed_amount: {
-                    amount: cart.shipping * 100,
-                    currency: 'usd',
-                  },
-                },
-              },
-            ],
-          }
-        : {}),
       mode: 'payment',
       return_url: `${origin}/api/confirm?session_id={CHECKOUT_SESSION_ID}`, 
     });
