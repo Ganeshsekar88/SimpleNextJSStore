@@ -87,7 +87,7 @@ export const POST = async (req: NextRequest) => {
               {
                 shipping_rate_data: {
                   type: 'fixed_amount',
-                  display_name: 'Standard delivery',
+                  display_name: 'Shipping',
                   fixed_amount: {
                     amount: cart.shipping * 100,
                     currency: 'usd',
