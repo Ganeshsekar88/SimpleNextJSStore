@@ -11,7 +11,7 @@ import { Button } from '../ui/button';
 import { links } from '@/utils/link';
 import UserIcon from './UserIcon';
 import SignOutLink from './SignOutLink';
-import { SignInButton, SignUpButton, Show } from '@clerk/nextjs';
+import { Show } from '@clerk/nextjs';
 import { auth } from '@clerk/nextjs/server';
 
 async function LinksDropdown() {
@@ -36,21 +36,17 @@ async function LinksDropdown() {
       <DropdownMenuContent className='w-48' align='start' sideOffset={10}>
         <Show when='signed-out'>
           <DropdownMenuItem>
-            <SignInButton>
-              <Link className='w-full text-left' href='/login'>
-                Login
-              </Link>
-            </SignInButton>
+            <Link className='w-full text-left' href='/login'>
+              Login
+            </Link>
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
 
           <DropdownMenuItem>
-            <SignUpButton>
-              <Link className='w-full text-left' href='/register'>
-                Register
-              </Link>
-            </SignUpButton>
+            <Link className='w-full text-left' href='/register'>
+              Register
+            </Link>
           </DropdownMenuItem>
         </Show>
 
