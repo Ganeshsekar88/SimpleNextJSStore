@@ -4,6 +4,7 @@ import { auth } from '@clerk/nextjs/server';
 import Link from 'next/link';
 import { LuArrowUpRight, LuShoppingBag } from 'react-icons/lu';
 import CurrentYear from '@/components/global/CurrentYear';
+import { Suspense } from 'react';
 
 const exploreLabels = new Set(['home', 'about', 'products']);
 const accountLabels = new Set(['favorites', 'cart', 'orders', 'reviews']);
@@ -36,14 +37,76 @@ function FooterLinks({
   );
 }
 
-async function Footer() {
+async function FooterAccount() {
   const { userId } = await auth();
   const isAdmin =
     userId === process.env.ADMIN1_USER_ID ||
     userId === process.env.ADMIN2_USER_ID;
+  const dashboardLink = links.find(({ label }) => label === 'dashboard');
+
+  if (userId && !isAdmin) return null;
+
+  return (
+    <section className='min-w-0' aria-label='Account'>
+      <h2 className='text-sm font-semibold uppercase tracking-[0.16em] text-foreground'>
+        Account
+      </h2>
+
+      <ul className='mt-5 space-y-3'>
+        {!userId ? (
+          <>
+            <li>
+              <Link
+                href='/login'
+                className='text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
+              >
+                Sign in
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                href='/register'
+                className='text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
+              >
+                Create account
+              </Link>
+            </li>
+          </>
+        ) : (
+          dashboardLink && (
+            <li>
+              <Link
+                href={dashboardLink.href}
+                className='text-sm capitalize text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
+              >
+                {dashboardLink.label}
+              </Link>
+            </li>
+          )
+        )}
+      </ul>
+    </section>
+  );
+}
+
+function FooterAccountFallback() {
+  return (
+    <section className='min-w-0' aria-label='Account' aria-busy='true'>
+      <h2 className='text-sm font-semibold uppercase tracking-[0.16em] text-foreground'>
+        Account
+      </h2>
+      <div className='mt-5 space-y-3' aria-hidden='true'>
+        <div className='h-4 w-16 animate-pulse rounded bg-muted' />
+        <div className='h-4 w-28 animate-pulse rounded bg-muted' />
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
   const exploreLinks = links.filter(({ label }) => exploreLabels.has(label));
   const accountLinks = links.filter(({ label }) => accountLabels.has(label));
-  const dashboardLink = links.find(({ label }) => label === 'dashboard');
 
   return (
     <footer className='border-t border-border bg-background text-foreground'>
@@ -77,49 +140,9 @@ async function Footer() {
 
           <FooterLinks heading='Explore' items={exploreLinks} />
           <FooterLinks heading='Your store' items={accountLinks} />
-
-          {(!userId || isAdmin) && (
-            <section className='min-w-0' aria-label='Account'>
-              <h2 className='text-sm font-semibold uppercase tracking-[0.16em] text-foreground'>
-                Account
-              </h2>
-
-              <ul className='mt-5 space-y-3'>
-                {!userId ? (
-                  <>
-                    <li>
-                      <Link
-                        href='/login'
-                        className='text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
-                      >
-                        Sign in
-                      </Link>
-                    </li>
-
-                    <li>
-                      <Link
-                        href='/register'
-                        className='text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
-                      >
-                        Create account
-                      </Link>
-                    </li>
-                  </>
-                ) : (
-                  dashboardLink && (
-                    <li>
-                      <Link
-                        href={dashboardLink.href}
-                        className='text-sm capitalize text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background'
-                      >
-                        {dashboardLink.label}
-                      </Link>
-                    </li>
-                  )
-                )}
-              </ul>
-            </section>
-          )}
+          <Suspense fallback={<FooterAccountFallback />}>
+            <FooterAccount />
+          </Suspense>
         </div>
 
         <div className='mt-10 flex flex-col gap-3 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between'>

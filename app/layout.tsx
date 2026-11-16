@@ -5,7 +5,6 @@ import Container from '@/components/global/Container';
 import Navbar from '@/components/navbar/Navbar';
 import Footer from '@/components/footer/Footer';
 import Providers from './providers';
-import { Suspense } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -27,9 +26,7 @@ export default function RootLayout({
           <main className='min-w-0 flex-1'>
             <Container className='py-12 sm:py-20'>{children}</Container>
           </main>
-          <Suspense fallback={null}>
-            <Footer />
-          </Suspense>
+          <Footer />
         </Providers>
       </body>
     </html>
