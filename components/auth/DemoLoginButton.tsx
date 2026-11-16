@@ -1,17 +1,17 @@
 'use client';
 
 import { useSignIn } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 
 function DemoLoginButton({
-  redirectUrl = '/',
   onPendingChange,
 }: {
-  redirectUrl?: string;
   onPendingChange?: (isPending: boolean) => void;
 }) {
   const { signIn } = useSignIn();
+  const router = useRouter();
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -48,24 +48,23 @@ function DemoLoginButton({
         );
       }
 
-      let destination = redirectUrl;
-      const { error: finalizeError } = await signIn.finalize({
+      await signIn.finalize({
         navigate: ({ decorateUrl }) => {
-          destination = decorateUrl(redirectUrl);
+          const destination = decorateUrl('/');
+          if (destination.startsWith('http')) {
+            window.location.assign(destination);
+          } else {
+            router.replace(destination);
+          }
         },
       });
-      if (finalizeError) throw new Error(finalizeError.message);
-
-      // finalize() activates the session after its navigate callback returns.
-      // Navigate only after it resolves so the protected page request includes
-      // the new session instead of rendering and retaining a stale 401 boundary.
-      window.location.assign(destination);
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : 'Demo sign-in could not finish.'
       );
     } finally {
-      // Keep the control reusable after a failed attempt.
+      // Keep the control reusable if Clerk completes without a full reload, or
+      // the user returns to this route after signing out.
       setIsSigningIn(false);
       onPendingChange?.(false);
     }

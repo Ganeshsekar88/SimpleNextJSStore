@@ -14,7 +14,6 @@ import {
 
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { connection } from 'next/server';
-import { unauthorized } from 'next/navigation';
 
 
 const renderError = (error: unknown): { message: string } => {
@@ -27,7 +26,7 @@ const renderError = (error: unknown): { message: string } => {
 const getAuthUser = async () => {
   const user = await currentUser();
   if (!user) {
-    unauthorized();
+    throw new Error('You must be logged in to access this route');
   }
   return user;
 };
