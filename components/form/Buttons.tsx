@@ -1,18 +1,27 @@
 'use client';
 
+import { ClerkFailed, ClerkLoaded, ClerkLoading, SignIn } from '@clerk/nextjs';
 import { ReloadIcon } from '@radix-ui/react-icons';
+import { useState, type ReactNode } from 'react';
 import { useFormStatus } from 'react-dom';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { AuthWidgetSkeleton } from '@/components/auth/AuthFormSkeleton';
+import DemoLoginButton from '@/components/auth/DemoLoginButton';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
-import { SignInButton } from '@clerk/nextjs';
-import { FaRegHeart, FaHeart } from 'react-icons/fa';
 
-type btnSize = 'default' | 'lg' | 'sm';
+type BtnSize = 'default' | 'lg' | 'sm';
 
 type SubmitButtonProps = {
   className?: string;
   text?: string;
-  size?: btnSize;
+  size?: BtnSize;
 };
 
 export function SubmitButton({
@@ -41,7 +50,6 @@ export function SubmitButton({
   );
 }
 
-
 export const CardSubmitButton = ({ isFavorite }: { isFavorite: boolean }) => {
   const { pending } = useFormStatus();
   const label = isFavorite ? 'Remove from favorites' : 'Add to favorites';
@@ -51,11 +59,11 @@ export const CardSubmitButton = ({ isFavorite }: { isFavorite: boolean }) => {
       type='submit'
       size='icon'
       variant='outline'
-      className=' p-2 cursor-pointer'
+      className='p-2 cursor-pointer'
       aria-label={label}
     >
       {pending ? (
-        <ReloadIcon className=' animate-spin' />
+        <ReloadIcon className='animate-spin' />
       ) : isFavorite ? (
         <FaHeart />
       ) : (
@@ -65,13 +73,76 @@ export const CardSubmitButton = ({ isFavorite }: { isFavorite: boolean }) => {
   );
 };
 
-export const CardSignInButton = ({ redirectUrl }: { redirectUrl?: string }) => {
+function SignInDialog({
+  redirectUrl,
+  trigger,
+}: {
+  redirectUrl?: string;
+  trigger: ReactNode;
+}) {
+  const [isDemoLoginPending, setIsDemoLoginPending] = useState(false);
+  const demoLoginEnabled = process.env.NEXT_PUBLIC_DEMO_LOGIN_ENABLED === 'true';
+
   return (
-    <SignInButton
-      mode='modal'
-      forceRedirectUrl={redirectUrl}
-      signUpForceRedirectUrl={redirectUrl}
-    >
+    <Dialog>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
+
+      <DialogContent className='max-h-[90vh] max-w-[450px] overflow-y-auto p-0'>
+        <DialogTitle className='sr-only'>Sign in</DialogTitle>
+        <div className='w-full min-w-0 overflow-hidden'>
+          <div className='flex min-h-[34rem] min-w-0 justify-center p-4 sm:p-5'>
+            {isDemoLoginPending ? (
+              <AuthWidgetSkeleton variant='login' />
+            ) : (
+              <>
+                <ClerkLoading>
+                  <AuthWidgetSkeleton variant='login' />
+                </ClerkLoading>
+
+                <ClerkLoaded>
+                  <SignIn
+                    routing='hash'
+                    forceRedirectUrl={redirectUrl}
+                    signUpForceRedirectUrl={redirectUrl}
+                    fallback={<AuthWidgetSkeleton variant='login' />}
+                  />
+                </ClerkLoaded>
+
+                <ClerkFailed>
+                  <p
+                    className='w-full max-w-[400px] self-center rounded-xl border bg-background p-6 text-center text-sm text-muted-foreground'
+                    role='alert'
+                  >
+                    Sign-in could not load. Refresh the page and try again.
+                  </p>
+                </ClerkFailed>
+              </>
+            )}
+          </div>
+
+          {demoLoginEnabled && (
+            <section className='border-t bg-card p-5 text-center'>
+              <h2 className='text-lg font-semibold'>Explore the demo</h2>
+              <p className='mt-1 text-sm text-muted-foreground'>
+                Continue with a demo admin session.
+              </p>
+              <DemoLoginButton onPendingChange={setIsDemoLoginPending} />
+            </section>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export const CardSignInButton = ({
+  redirectUrl,
+}: {
+  redirectUrl?: string;
+}) => (
+  <SignInDialog
+    redirectUrl={redirectUrl}
+    trigger={
       <Button
         type='button'
         size='icon'
@@ -81,138 +152,21 @@ export const CardSignInButton = ({ redirectUrl }: { redirectUrl?: string }) => {
       >
         <FaRegHeart />
       </Button>
-    </SignInButton>
-  );
-};
-
-// export const ProductSignInButton = ({ redirectUrl }: { redirectUrl?: string }) => {
-//   return (
-//     <SignInButton
-//       mode='modal'
-//       forceRedirectUrl={redirectUrl}
-//       signUpForceRedirectUrl={redirectUrl}
-//     >
-//       <Button type='button' size='default' className='mt-8'>
-//         Please Sign In
-//       </Button>
-//     </SignInButton>
-//   );
-// };
-
-
-import { SignIn } from "@clerk/nextjs";
-
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import DemoLoginButton from '../auth/DemoLoginButton';
-
+    }
+  />
+);
 
 export const ProductSignInButton = ({
   redirectUrl,
 }: {
   redirectUrl?: string;
-}) => {
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button type="button" size="default" className="mt-8">
-          Please Sign In
-        </Button>
-      </DialogTrigger>
-
-      <DialogContent className="max-h-[90vh] max-w-[450px] overflow-y-auto p-0">
-
-        <div className="flex flex-col items-center justify-center gap-4 p-4">
-
-          {/* Clerk Sign In */}
-          <SignIn
-            routing="hash"
-            forceRedirectUrl={redirectUrl}
-            signUpForceRedirectUrl={redirectUrl}
-          />
-
-          {/* Demo Login */}
-          {process.env.NEXT_PUBLIC_DEMO_LOGIN_ENABLED === "true" && (
-            <section className="w-full max-w-[400px] rounded-xl border bg-card p-5 text-center shadow-sm">
-
-              <h2 className="text-lg font-semibold">
-                Explore the demo
-              </h2>
-
-              <p className="mt-1 text-sm text-muted-foreground">
-                Continue with a demo admin session.
-              </p>
-
-              <div className="mt-4">
-                <DemoLoginButton />
-              </div>
-
-            </section>
-          )}
-
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogTrigger,
-// } from "@/components/ui/dialog";
-
-// import { SignIn } from "@clerk/nextjs";
-// import DemoLoginButton from '../auth/DemoLoginButton';
-
-// export const ProductSignInButton = ({
-//   redirectUrl,
-// }: {
-//   redirectUrl?: string;
-// }) => {
-//   return (
-//     <Dialog>
-//       <DialogTrigger asChild>
-//         <Button type="button" size="default" className="mt-8">
-//           Please Sign In
-//         </Button>
-//       </DialogTrigger>
-
-//       <DialogContent className="max-w-[450px] p-0 overflow-y-auto max-h-[90vh]">
-
-//         {/* Clerk Sign In */}
-//         <div className="flex justify-center pt-4">
-//           <SignIn
-//             routing="hash"
-//             forceRedirectUrl={redirectUrl}
-//             signUpForceRedirectUrl={redirectUrl}
-//           />
-//         </div>
-
-//         {/* Demo Login */}
-//         {process.env.NEXT_PUBLIC_DEMO_LOGIN_ENABLED === "true" && (
-//           <section className="w-full border-t p-5 text-center">
-
-//             <h2 className="text-lg font-semibold">
-//               Explore the demo
-//             </h2>
-
-//             <p className="mt-1 text-sm text-muted-foreground">
-//               Continue with a demo admin session.
-//             </p>
-
-//             <div className="mt-4">
-//               <DemoLoginButton />
-//             </div>
-
-//           </section>
-//         )}
-
-//       </DialogContent>
-//     </Dialog>
-//   );
-// };
+}) => (
+  <SignInDialog
+    redirectUrl={redirectUrl}
+    trigger={
+      <Button type='button' size='default' className='mt-8'>
+        Please Sign In
+      </Button>
+    }
+  />
+);
