@@ -5,7 +5,11 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 
-function DemoLoginButton() {
+function DemoLoginButton({
+  onPendingChange,
+}: {
+  onPendingChange?: (isPending: boolean) => void;
+}) {
   const { signIn } = useSignIn();
   const router = useRouter();
   const [isSigningIn, setIsSigningIn] = useState(false);
@@ -15,6 +19,7 @@ function DemoLoginButton() {
     if (isSigningIn) return;
 
     setIsSigningIn(true);
+    onPendingChange?.(true);
     setErrorMessage('');
 
     try {
@@ -57,7 +62,11 @@ function DemoLoginButton() {
       setErrorMessage(
         error instanceof Error ? error.message : 'Demo sign-in could not finish.'
       );
+    } finally {
+      // Keep the control reusable if Clerk completes without a full reload, or
+      // the user returns to this route after signing out.
       setIsSigningIn(false);
+      onPendingChange?.(false);
     }
   };
 
