@@ -3,7 +3,7 @@ import RegisterForm from './RegisterForm';
 
 export default function RegisterPage() {
   return (
-      <Suspense fallback={<p>Loading...</p>}>
+      <Suspense fallback={null}>
       <RegisterForm />
     </Suspense>
   );
