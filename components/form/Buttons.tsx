@@ -73,7 +73,7 @@ export const CardSubmitButton = ({ isFavorite }: { isFavorite: boolean }) => {
   );
 };
 
-function SignInDialog({
+export function SignInDialog({
   redirectUrl,
   trigger,
 }: {
@@ -126,7 +126,10 @@ function SignInDialog({
               <p className='mt-1 text-sm text-muted-foreground'>
                 Continue with a demo admin session.
               </p>
-              <DemoLoginButton onPendingChange={setIsDemoLoginPending} />
+              <DemoLoginButton
+                redirectUrl={redirectUrl}
+                onPendingChange={setIsDemoLoginPending}
+              />
             </section>
           )}
         </div>

@@ -23,11 +23,11 @@ export async function POST(request: NextRequest) {
   }
 
   const demoUserId = process.env.ADMIN2_USER_ID;
-  if (!demoUserId || demoUserId !== process.env.ADMIN2_USER_ID) {
+  if (!demoUserId) {
     return NextResponse.json(
       {
         error:
-          'Demo account configuration is missing or mismatched. Set DEMO_CLERK_USER_ID and ADMIN3_USER_ID to the same Clerk user ID.',
+          'Demo account configuration is missing. Set ADMIN2_USER_ID to the Clerk user ID for the demo admin.',
       },
       { status: 503, headers: noStoreHeaders }
     );
