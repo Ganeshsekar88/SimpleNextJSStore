@@ -26,7 +26,7 @@ function ShareButton({
   productId,
   name,
   description,
-  image,
+  // image,
 }: ShareButtonProps) {
 
   const url = process.env.NEXT_PUBLIC_WEBSITE_URL;
