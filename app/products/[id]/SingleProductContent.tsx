@@ -1,9 +1,3 @@
-
-
-
-
-
-
 import { auth } from '@clerk/nextjs/server';
 
 import BreadCrumbs from '@/components/single-product/BreadCrumbs';
@@ -85,6 +79,8 @@ async function SingleProductContent({
                         <ShareButton
                             productId={id}
                             name={name}
+                            description={description}
+                            // image={image}
                         />
 
                     </div>
